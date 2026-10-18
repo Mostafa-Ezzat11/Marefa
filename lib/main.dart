@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:marefa/student/views/main_shell_view.dart';
+import 'features/instructor_cources/screens/instructor_courses_screen.dart';
 
 void main() {
   runApp(Marefa());
@@ -14,7 +14,7 @@ class Marefa extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       theme: ThemeData(fontFamily: 'OpenSans'),
-      home: MainShell(), //Scaffold(
+      home: InstructorCoursesScreen(), //Scaffold(
       //   body: PaymentSuccessfulView(),
       //   // body: Center(
       //   //   child: Text(
