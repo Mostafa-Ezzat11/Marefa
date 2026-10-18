@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marefa/student/views/my_courses_view.dart';
 import 'package:marefa/student/views/payment_successful_view.dart.dart';
+import 'package:marefa/student/views/wish_list_view.dart';
 import 'package:marefa/student/widgets/bottom_nav.dart';
 
 class MainShell extends StatefulWidget {
@@ -12,7 +13,11 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   int navIndex = 0;
 
-  final pages = const [PaymentSuccessfulView(), MyCoursesPage()];
+  final pages = const [
+    PaymentSuccessfulView(),
+    MyCoursesPage(),
+    WishListView(),
+  ];
 
   @override
   Widget build(BuildContext context) {
