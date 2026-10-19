@@ -3,13 +3,11 @@ import 'package:marefa/constants.dart';
 import 'package:marefa/student/models/lesson_model.dart';
 
 class LessonCard extends StatelessWidget {
-  LessonCard({
-    super.key,
-    required this.lesson,
-    this.isSelectted = false,
-  });
+  LessonCard({super.key, required this.lesson, this.isSelectted = false});
+
   final LessonModel lesson;
   bool isSelectted;
+
   @override
   Widget build(BuildContext context) {
     return Container(

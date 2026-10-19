@@ -23,7 +23,7 @@ class Course {
   // Formatted values
   String get formattedPrice => '\$${price.toStringAsFixed(2)}';
 
-  // String get formattedReviewCount => reviewCount >= 1000
-  // ? '${(reviewCount / 1000).toStringAsFixed(1)}k'
-  //     : '$reviewCount';
+// String get formattedReviewCount => reviewCount >= 1000
+// ? '${(reviewCount / 1000).toStringAsFixed(1)}k'
+//     : '$reviewCount';
 }

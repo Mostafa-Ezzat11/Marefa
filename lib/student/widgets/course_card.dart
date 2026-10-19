@@ -45,11 +45,11 @@ class CourseCard extends StatelessWidget {
 
                   Row(
                     children: [
-                      const Icon(
-                        Icons.star_rounded,
-                        size: 16,
-                        color: AppColors.orangeColor,
-                      ),
+                      // const Icon(
+                      //   Icons.star_rounded,
+                      //   size: 16,
+                      //   color: AppColors.orangeColor,
+                      // ),
 
                       const SizedBox(width: 4),
 
@@ -88,11 +88,7 @@ class _CourseThumbnail extends StatelessWidget {
     const placeholder = ColoredBox(
       color: AppColors.primaryDarkColor,
       child: Center(
-        child: Icon(
-          Icons.code_rounded,
-          color: Colors.white54,
-          size: 28,
-        ),
+        child: Icon(Icons.code_rounded, color: Colors.white54, size: 28),
       ),
     );
 
@@ -106,10 +102,10 @@ class _CourseThumbnail extends StatelessWidget {
         child: asset == null
             ? placeholder
             : Image.asset(
-                asset,
-                fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => placeholder,
-              ),
+          asset,
+          fit: BoxFit.cover,
+          errorBuilder: (_, _, _) => placeholder,
+        ),
       ),
     );
   }
