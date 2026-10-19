@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:marefa/student/views/course_videos_view.dart';
+import 'package:marefa/student/views/home_view.dart';
 import 'package:marefa/student/views/my_courses_view.dart';
 import 'package:marefa/student/views/payment_successful_view.dart.dart';
 import 'package:marefa/student/views/wish_list_view.dart';
@@ -14,9 +16,10 @@ class _MainShellState extends State<MainShell> {
   int navIndex = 0;
 
   final pages = const [
-    PaymentSuccessfulView(),
+    HomeView(),
     MyCoursesPage(),
     WishListView(),
+    CourseVideosView(),
   ];
 
   @override

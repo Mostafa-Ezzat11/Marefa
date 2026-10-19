@@ -1,30 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:marefa/constants.dart';
-import 'package:marefa/student/models/course_model.dart';
+import 'package:marefa/student/models/course.dart';
 import 'package:marefa/student/widgets/tab_chip.dart';
 
 List<Course> allCourses = [
-  Course(
-    title: 'Flutter Development',
-    progress: 45,
-    color: Color(0xFF1F6B4A),
-  ),
-  Course(
-    title: 'Python for Beginners',
-    progress: 20,
-    color: Color(0xFFD9680F),
-  ),
-  Course(
-    title: 'UI/UX Design',
-    progress: 0,
-    color: Color(0xFF3F9F78),
-  ),
-  Course(
-    title: 'Dart Basics',
-    progress: 100,
-    completed: true,
-    color: Color(0xFF2A7AB8),
-  ),
+  Course(title: 'Flutter Development', price: 65),
+  Course(title: 'Python for Beginners', price: 40),
+  Course(title: 'UI/UX Design', price: 60),
+  Course(title: 'Dart Basics', completed: true, price: 50),
 ];
 
 class MyCoursesPage extends StatefulWidget {
@@ -119,7 +102,7 @@ class CourseItem extends StatelessWidget {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: course.color,
+                  color: AppColors.primaryColor,
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
@@ -136,7 +119,7 @@ class CourseItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'Progress: ${course.progress}%',
+                    'Progress: 70%',
                     style: const TextStyle(
                       fontSize: 12,
                       color: Colors.grey,
@@ -151,7 +134,7 @@ class CourseItem extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(4),
           child: LinearProgressIndicator(
-            value: course.progress / 100,
+            value: 70 / 100,
             minHeight: 5,
             backgroundColor: AppColors.borderColor,
             valueColor: AlwaysStoppedAnimation(
