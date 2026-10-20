@@ -54,7 +54,7 @@ class CourseVideosView extends StatelessWidget {
                 title: 'Navigation ',
                 duration: '14:36',
               ),
-              isSelectted: true,
+              isSelected: true,
             ),
 
             LessonCard(

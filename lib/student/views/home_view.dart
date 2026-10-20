@@ -50,6 +50,20 @@ class _HomeViewState extends State<HomeView> {
       image: 'assets/images/course_visual_storytelling.png',
       price: 49.99,
     ),
+    Course(
+      image: 'assets/images/course_visual_storytelling.png',
+      instructorImage: 'assets/images/payment_successfuly.png',
+      title: 'Flutter Development Complete Guide',
+      price: 49.99,
+      reviewCount: 12000,
+      level: 'Expert',
+      durationHours: 1,
+      instructorName: 'Youssif Shawky',
+      instructorTitle: 'Senior Flutter Developer',
+      description:
+          'Learn Flutter from scratch and build real-world apps with modern techniques.',
+      sectionCount: 4,
+    ),
     Course(title: 'Flutter UI/UX Design', price: 39.99),
   ];
 

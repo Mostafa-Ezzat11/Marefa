@@ -3,10 +3,10 @@ import 'package:marefa/constants.dart';
 import 'package:marefa/student/models/lesson_model.dart';
 
 class LessonCard extends StatelessWidget {
-  LessonCard({super.key, required this.lesson, this.isSelectted = false});
+  LessonCard({super.key, required this.lesson, this.isSelected = false});
 
   final LessonModel lesson;
-  bool isSelectted;
+  bool isSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class LessonCard extends StatelessWidget {
       padding: EdgeInsets.all(16),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: isSelectted ? AppColors.primaryColor : null,
+        color: isSelected ? AppColors.primaryColor : null,
         border: BoxBorder.all(color: AppColors.borderColor),
         borderRadius: BorderRadius.circular(14),
       ),
@@ -22,7 +22,7 @@ class LessonCard extends StatelessWidget {
         'Lesson ${lesson.id}: ${lesson.title} . ${lesson.duration}',
         style: TextStyle(
           fontSize: 16,
-          color: isSelectted ? Colors.white : null,
+          color: isSelected ? Colors.white : null,
         ),
       ),
     );

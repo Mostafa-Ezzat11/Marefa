@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:marefa/student/views/home_view.dart';
 import 'package:marefa/student/views/main_shell_view.dart';
 
 void main() {
@@ -14,15 +15,8 @@ class Marefa extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       theme: ThemeData(fontFamily: 'OpenSans'),
-      home: MainShell(), //Scaffold(
-      //   body: PaymentSuccessfulView(),
-      //   // body: Center(
-      //   //   child: Text(
-      //   //     'Welcome my team ✌️',
-      //   //     style: TextStyle(fontSize: 25),
-      //   //   ),
-      //   // ),
-      // ),
+
+      home: MainShell(),
     );
   }
 }

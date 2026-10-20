@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marefa/constants.dart';
 import 'package:marefa/student/models/course.dart';
+import 'package:marefa/student/views/course_details_view.dart';
 
 class CourseCard extends StatelessWidget {
   const CourseCard({super.key, required this.course, this.onTap});
@@ -11,7 +12,14 @@ class CourseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CourseDetailsView(course: course),
+          ),
+        );
+      },
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
@@ -45,22 +53,37 @@ class CourseCard extends StatelessWidget {
 
                   Row(
                     children: [
-                      // const Icon(
-                      //   Icons.star_rounded,
-                      //   size: 16,
-                      //   color: AppColors.orangeColor,
-                      // ),
-
-                      const SizedBox(width: 4),
-
+                      // if (course.hasRating) ...[
+                      //   const Icon(
+                      //     Icons.star_border_rounded,
+                      //     size: 16,
+                      //     color: HomeColors.star,
+                      //   ),
+                      //   const SizedBox(width: 4),
+                      //   Text(
+                      //     course.rating!.toStringAsFixed(1),
+                      //     style: const TextStyle(
+                      //       fontSize: 13,
+                      //       fontWeight: FontWeight.w500,
+                      //       color: AppColors.largeTextColor,
+                      //     ),
+                      //   ),
+                      //   const SizedBox(width: 4),
+                      //   // Text(
+                      //     '(${course.formattedReviewCount})',
+                      //     style: const TextStyle(
+                      //       fontSize: 12,
+                      //       color: HomeColors.mutedText,
+                      //     ),
+                      //   ),
+                      // ],
                       const Spacer(),
-
                       Text(
                         course.formattedPrice,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.primaryDarkColor,
+                          color: AppColors.largeTextColor,
                         ),
                       ),
                     ],
@@ -102,10 +125,10 @@ class _CourseThumbnail extends StatelessWidget {
         child: asset == null
             ? placeholder
             : Image.asset(
-          asset,
-          fit: BoxFit.cover,
-          errorBuilder: (_, _, _) => placeholder,
-        ),
+                asset,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => placeholder,
+              ),
       ),
     );
   }
