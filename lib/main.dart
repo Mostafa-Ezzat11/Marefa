@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'features/instructor_cources/screens/instructor_courses_screen.dart';
+import 'package:marefa/student/views/home_view.dart';
+import 'package:marefa/student/views/main_shell_view.dart';
 
 void main() {
   runApp(Marefa());
