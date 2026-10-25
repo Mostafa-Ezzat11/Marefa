@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:marefa/teacher/views/add_course_basic_info_view.dart';
-import 'package:marefa/teacher/views/add_course_content_view.dart';
-import 'package:marefa/teacher/views/teacher_home_page.dart';
-import 'teacher/views/instructor_courses_view.dart';
-import 'package:marefa/student/views/home_view.dart';
-import 'package:marefa/student/views/main_shell_view.dart';
+import 'package:marefa/general%20pages/LogiGSignUpselection.dart';
+import 'package:marefa/general%20pages/login.dart';
+import 'package:marefa/general%20pages/security.dart';
+import 'package:marefa/onboarding/onboarding1.dart';
 
 void main() {
   runApp(Marefa());
@@ -19,7 +17,7 @@ class Marefa extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       theme: ThemeData(fontFamily: 'OpenSans'),
-      home: AddCourseContentview(), //Scaffold(
+      home: Logigsignupselection(), //Scaffold(
       //   body: PaymentSuccessfulView(),
       //   // body: Center(
       //   //   child: Text(

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:marefa/teacher/models/activity_item.dart';
+import 'package:marefa/teacher/models/stat_item.dart';
 import '../../constants.dart';
 import '../widgets/activity_tile.dart';
 import '../widgets/home_header.dart';
 import '../widgets/section_header.dart';
-import '../widgets/stat_item.dart';
 import '../widgets/stats_grid.dart';
-import '../widgets/activity_item.dart';
 import '../widgets/primary_button.dart';
-
 
 class TeacherHomePage extends StatelessWidget {
   const TeacherHomePage({super.key});
@@ -126,8 +125,9 @@ class TeacherHomePage extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: _activities.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 10),
-      itemBuilder: (_, index) => ActivityTile(item: _activities[index]),
+      separatorBuilder: (_, _) => const SizedBox(height: 10),
+      itemBuilder: (_, index) =>
+          ActivityTile(item: _activities[index]),
     );
   }
 }

@@ -1,12 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:marefa/constants.dart';
-import 'package:marefa/features/instructor_cources/custom_widgets/course_action_button.dart';
-import 'package:marefa/features/instructor_cources/screens/add_course_basic_info_screen.dart';
-import '../models/course_enums.dart';
-import '../models/instructor_course_model.dart';
-import '../custom_widgets/instructor_course_card.dart';
-
+import 'package:marefa/teacher/models/course_enums.dart';
+import 'package:marefa/teacher/models/instructor_course_model.dart';
+import 'package:marefa/teacher/views/add_course_basic_info_screen.dart';
+import 'package:marefa/teacher/widgets/course_action_button.dart';
+import 'package:marefa/teacher/widgets/instructor_course_card.dart';
 
 class InstructorCoursesScreen extends StatefulWidget {
   const InstructorCoursesScreen({super.key});
@@ -81,9 +79,9 @@ class _InstructorCoursesScreenState
         matchesTab = true;
       }
 
-      bool matchesSearch = course.title
-          .toLowerCase()
-          .contains(searchQuery.toLowerCase());
+      bool matchesSearch = course.title.toLowerCase().contains(
+        searchQuery.toLowerCase(),
+      );
 
       if (matchesTab && matchesSearch) {
         result.add(course);
@@ -129,12 +127,7 @@ class _InstructorCoursesScreenState
 
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(
-                  20,
-                  10,
-                  20,
-                  20,
-                ),
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -161,8 +154,7 @@ class _InstructorCoursesScreenState
                     else
                       ListView.builder(
                         shrinkWrap: true,
-                        physics:
-                            const NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: displayedCourses.length,
                         itemBuilder: (context, index) {
                           return Padding(
@@ -235,33 +227,25 @@ class _InstructorCoursesScreenState
     );
   }
 
- 
-
-Widget _buildAddCourseButton() {
-  return CourseActionButton(
-    text: 'Add new course',
-    icon: Icons.add,
-    onPressed: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return const AddCourseBasicInfoScreen();
-          },
-        ),
-      );
-    },
-  );
-}
-
+  Widget _buildAddCourseButton() {
+    return CourseActionButton(
+      text: 'Add new course',
+      icon: Icons.add,
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return const AddCourseBasicInfoScreen();
+            },
+          ),
+        );
+      },
+    );
+  }
 
   Widget _buildTabs() {
-    const tabs = [
-      'All',
-      'Published',
-      'Drafts',
-      'In review',
-    ];
+    const tabs = ['All', 'Published', 'Drafts', 'In review'];
 
     return Container(
       padding: const EdgeInsets.all(4),
@@ -322,7 +306,7 @@ Widget _buildAddCourseButton() {
             Icon(
               Icons.menu_book_outlined,
               size: 42,
-              color: AppColors.primaryColor.withOpacity(0.7),
+              color: AppColors.primaryColor.withValues(alpha: 0.7),
             ),
 
             const SizedBox(height: 12),

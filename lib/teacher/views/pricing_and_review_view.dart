@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:marefa/constants.dart';
-import 'package:marefa/features/instructor_cources/custom_widgets/course_action_button.dart';
-import 'package:marefa/features/instructor_cources/custom_widgets/course_step_indicator.dart';
-import 'package:marefa/features/instructor_cources/custom_widgets/save_draft_button.dart';
-import 'package:marefa/features/instructor_cources/screens/course_submition_review_screen.dart';
+import 'package:marefa/teacher/widgets/course_action_button.dart';
+import 'package:marefa/teacher/widgets/course_step_indicator.dart';
+import 'package:marefa/teacher/widgets/save_draft_button.dart';
+import 'package:marefa/teacher/views/course_submition_review_view.dart';
 
 enum PriceType { paid, free }
 
-class PricingReviewScreen extends StatefulWidget {
-  const PricingReviewScreen({super.key});
+class PricingReviewview extends StatefulWidget {
+  const PricingReviewview({super.key});
 
   @override
-  State<PricingReviewScreen> createState() => _PricingReviewScreenState();
+  State<PricingReviewview> createState() => _PricingReviewviewstate();
 }
 
-class _PricingReviewScreenState extends State<PricingReviewScreen> {
+class _PricingReviewviewstate extends State<PricingReviewview> {
   final _formKey = GlobalKey<FormState>();
   final _priceController = TextEditingController();
 
@@ -46,7 +46,7 @@ class _PricingReviewScreenState extends State<PricingReviewScreen> {
     //final price = _isFree ? 0.0 : double.parse(_priceController.text);
 
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => SubmittedReviewScreen()),
+      MaterialPageRoute(builder: (context) => SubmittedReviewview()),
     );
   }
 
@@ -64,7 +64,9 @@ class _PricingReviewScreenState extends State<PricingReviewScreen> {
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
-        iconTheme: const IconThemeData(color: AppColors.largeTextColor),
+        iconTheme: const IconThemeData(
+          color: AppColors.largeTextColor,
+        ),
         titleTextStyle: const TextStyle(
           color: AppColors.largeTextColor,
           fontSize: 18,
@@ -163,7 +165,10 @@ class _PricingHeader extends StatelessWidget {
 
 // Price type option: Paid / Free
 class _PriceTypeSelector extends StatelessWidget {
-  const _PriceTypeSelector({required this.selected, required this.onChanged});
+  const _PriceTypeSelector({
+    required this.selected,
+    required this.onChanged,
+  });
 
   final PriceType selected;
   final ValueChanged<PriceType> onChanged;
@@ -207,7 +212,10 @@ class _PriceTypeSelector extends StatelessWidget {
 
 // Price text field (LE currency on the side)
 class _PriceField extends StatelessWidget {
-  const _PriceField({required this.controller, required this.enabled});
+  const _PriceField({
+    required this.controller,
+    required this.enabled,
+  });
 
   final TextEditingController controller;
   final bool enabled;
@@ -245,9 +253,13 @@ class _PriceField extends StatelessWidget {
           enabled: enabled,
           cursorColor: AppColors.primaryColor,
           style: const TextStyle(color: AppColors.largeTextColor),
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          keyboardType: const TextInputType.numberWithOptions(
+            decimal: true,
+          ),
           inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
+            FilteringTextInputFormatter.allow(
+              RegExp(r'^\d*\.?\d{0,2}'),
+            ),
           ],
           validator: _validate,
           decoration: InputDecoration(
@@ -264,10 +276,20 @@ class _PriceField extends StatelessWidget {
             border: _border(AppColors.borderColor),
             enabledBorder: _border(AppColors.borderColor),
             disabledBorder: _border(AppColors.borderColor),
-            focusedBorder: _border(AppColors.primaryColor, width: 1.5),
-            errorBorder: _border(const Color.fromARGB(255, 218, 25, 7)),
-            focusedErrorBorder: _border(const Color.fromARGB(255, 218, 25, 7), width: 1.5),
-            errorStyle: const TextStyle(color: Color.fromARGB(255, 218, 25, 7)),
+            focusedBorder: _border(
+              AppColors.primaryColor,
+              width: 1.5,
+            ),
+            errorBorder: _border(
+              const Color.fromARGB(255, 218, 25, 7),
+            ),
+            focusedErrorBorder: _border(
+              const Color.fromARGB(255, 218, 25, 7),
+              width: 1.5,
+            ),
+            errorStyle: const TextStyle(
+              color: Color.fromARGB(255, 218, 25, 7),
+            ),
           ),
         ),
       ],
@@ -277,7 +299,10 @@ class _PriceField extends StatelessWidget {
 
 // Terms checkbox
 class _TermsCheckbox extends StatelessWidget {
-  const _TermsCheckbox({required this.value, required this.onChanged});
+  const _TermsCheckbox({
+    required this.value,
+    required this.onChanged,
+  });
 
   final bool value;
   final ValueChanged<bool?> onChanged;
@@ -289,14 +314,17 @@ class _TermsCheckbox extends StatelessWidget {
       onChanged: onChanged,
       activeColor: AppColors.primaryColor,
       checkColor: Colors.white,
-      side: const BorderSide(color: AppColors.primaryDarkColor, width: 1.5),
+      side: const BorderSide(
+        color: AppColors.primaryDarkColor,
+        width: 1.5,
+      ),
       contentPadding: EdgeInsets.zero,
       controlAffinity: ListTileControlAffinity.leading,
       title: Text(
         "I own the rights to this content and agree to Marefa's teaching standards.",
-        style: Theme.of(
-          context,
-        ).textTheme.bodySmall?.copyWith(color: AppColors.largeTextColor),
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: AppColors.largeTextColor,
+        ),
       ),
     );
   }
@@ -338,7 +366,9 @@ class _BottomActions extends StatelessWidget {
           SaveDraftButton(
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Draft will be added soon.')),
+                const SnackBar(
+                  content: Text('Draft will be added soon.'),
+                ),
               );
             },
           ),

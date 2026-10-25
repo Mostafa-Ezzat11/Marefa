@@ -3,7 +3,7 @@ import 'package:marefa/constants.dart';
 import '../models/instructor_course_model.dart';
 import '../models/course_enums.dart';
 import 'course_status_chip.dart';
-import '../screens/instructor_course_details_screen.dart';
+import '../views/instructor_course_details_view.dart';
 
 class InstructorCourseCard extends StatelessWidget {
   final InstructorCourseModel course;
@@ -12,7 +12,6 @@ class InstructorCourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return InkWell(
       borderRadius: BorderRadius.circular(19),
       onTap: () {
@@ -20,7 +19,7 @@ class InstructorCourseCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) {
-              return InstructorCourseDetailsScreen(course: course);
+              return InstructorCourseDetailsview(course: course);
             },
           ),
         );
@@ -42,7 +41,9 @@ class InstructorCourseCard extends StatelessWidget {
                 IconButton(
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Course menu coming soon')),
+                      const SnackBar(
+                        content: Text('Course menu coming soon'),
+                      ),
                     );
                   },
                   icon: const Icon(Icons.more_horiz, size: 20),
@@ -147,7 +148,8 @@ class InstructorCourseCard extends StatelessWidget {
   }
 
   Widget _buildThumbnail() {
-    if (course.thumbnailUrl != null && course.thumbnailUrl!.isNotEmpty) {
+    if (course.thumbnailUrl != null &&
+        course.thumbnailUrl!.isNotEmpty) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(11),
         child: Image.network(

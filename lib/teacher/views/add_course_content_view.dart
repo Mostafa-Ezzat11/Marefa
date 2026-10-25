@@ -1,26 +1,21 @@
-
 import 'package:flutter/material.dart';
 import 'package:marefa/constants.dart';
-import 'package:marefa/features/instructor_cources/screens/pricing_and_review_screen.dart';
-import '../custom_widgets/course_action_button.dart';
-import '../custom_widgets/save_draft_button.dart';
-import '../custom_widgets/course_step_indicator.dart';
+import 'package:marefa/teacher/views/pricing_and_review_view.dart';
+import '../widgets/course_action_button.dart';
+import '../widgets/save_draft_button.dart';
+import '../widgets/course_step_indicator.dart';
 
-enum LessonContentType {
-  video,
-  document,
-}
+enum LessonContentType { video, document }
 
-class AddCourseContentScreen extends StatefulWidget {
-  const AddCourseContentScreen({super.key});
+class AddCourseContentview extends StatefulWidget {
+  const AddCourseContentview({super.key});
 
   @override
-  State<AddCourseContentScreen> createState() =>
-      _AddCourseContentScreenState();
+  State<AddCourseContentview> createState() =>
+      _AddCourseContentviewstate();
 }
 
-class _AddCourseContentScreenState
-    extends State<AddCourseContentScreen> {
+class _AddCourseContentviewstate extends State<AddCourseContentview> {
   final formKey = GlobalKey<FormState>();
 
   final List<SectionInput> sections = [];
@@ -68,7 +63,7 @@ class _AddCourseContentScreenState
         ),
       ),
 
-      // Screen content
+      // view content
       body: SafeArea(
         child: Form(
           key: formKey,
@@ -81,7 +76,7 @@ class _AddCourseContentScreenState
                 const CourseStepIndicator(currentStep: 1),
                 const SizedBox(height: 24),
 
-                // Screen title
+                // view title
                 const Text(
                   'Build your course',
                   style: TextStyle(
@@ -136,9 +131,7 @@ class _AddCourseContentScreenState
                 const SizedBox(height: 8),
 
                 // Save draft button
-                SaveDraftButton(
-                  onPressed: saveDraft,
-                ),
+                SaveDraftButton(onPressed: saveDraft),
               ],
             ),
           ),
@@ -158,9 +151,7 @@ class _AddCourseContentScreenState
       decoration: BoxDecoration(
         color: const Color(0xFFFFFEFA),
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(
-          color: AppColors.borderColor,
-        ),
+        border: Border.all(color: AppColors.borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,9 +184,7 @@ class _AddCourseContentScreenState
 
           TextFormField(
             controller: section.titleController,
-            decoration: _inputDecoration(
-              hint: 'Section name',
-            ),
+            decoration: _inputDecoration(hint: 'Section name'),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
                 return 'Please enter a section name';
@@ -238,10 +227,7 @@ class _AddCourseContentScreenState
 
   // ---------- Lesson ----------
 
-  Widget _buildLessonCard(
-    int sectionIndex,
-    int lessonIndex,
-  ) {
+  Widget _buildLessonCard(int sectionIndex, int lessonIndex) {
     final lesson = sections[sectionIndex].lessons[lessonIndex];
 
     return Container(
@@ -287,9 +273,7 @@ class _AddCourseContentScreenState
           // Lesson title
           TextFormField(
             controller: lesson.titleController,
-            decoration: _inputDecoration(
-              hint: 'Lesson title',
-            ),
+            decoration: _inputDecoration(hint: 'Lesson title'),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
                 return 'Please enter a lesson title';
@@ -375,9 +359,7 @@ class _AddCourseContentScreenState
               ),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.primaryDarkColor,
-                side: const BorderSide(
-                  color: AppColors.borderColor,
-                ),
+                side: const BorderSide(color: AppColors.borderColor),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -427,10 +409,7 @@ class _AddCourseContentScreenState
         children: [
           Icon(icon, size: 17),
           const SizedBox(width: 5),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 12),
-          ),
+          Text(label, style: const TextStyle(fontSize: 12)),
         ],
       ),
     );
@@ -450,11 +429,7 @@ class _AddCourseContentScreenState
       ),
       prefixIcon: icon == null
           ? null
-          : Icon(
-              icon,
-              size: 18,
-              color: AppColors.primaryColor,
-            ),
+          : Icon(icon, size: 18, color: AppColors.primaryColor),
       filled: true,
       fillColor: const Color(0xFFFFFEFA),
       contentPadding: const EdgeInsets.symmetric(
@@ -463,21 +438,15 @@ class _AddCourseContentScreenState
       ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(
-          color: AppColors.borderColor,
-        ),
+        borderSide: const BorderSide(color: AppColors.borderColor),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(
-          color: AppColors.borderColor,
-        ),
+        borderSide: const BorderSide(color: AppColors.borderColor),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(
-          color: AppColors.primaryColor,
-        ),
+        borderSide: const BorderSide(color: AppColors.primaryColor),
       ),
     );
   }
@@ -505,8 +474,9 @@ class _AddCourseContentScreenState
 
   void removeLesson(int sectionIndex, int lessonIndex) {
     setState(() {
-      final lesson =
-          sections[sectionIndex].lessons.removeAt(lessonIndex);
+      final lesson = sections[sectionIndex].lessons.removeAt(
+        lessonIndex,
+      );
 
       lesson.dispose();
     });
@@ -539,13 +509,12 @@ class _AddCourseContentScreenState
       return;
     }
 
-Navigator.push(
+    Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const PricingReviewScreen(),
+        builder: (context) => const PricingReviewview(),
       ),
     );
-
   }
 
   void saveDraft() {
@@ -580,8 +549,7 @@ class LessonInput {
   final TextEditingController titleController =
       TextEditingController();
 
-  final TextEditingController urlController =
-      TextEditingController();
+  final TextEditingController urlController = TextEditingController();
 
   LessonContentType contentType = LessonContentType.video;
 

@@ -1,34 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:marafty1/onboarding/onboarding3.dart';
-//import 'package:my_app/usersscren.dart/onboarding3.dart';
-import 'package:marafty1/onboarding/userscreen.dart';
+import 'package:marefa/onboarding/onboarding3.dart';
 
 class Onboarding2 extends StatefulWidget {
-  const Onboarding2({Key? key}) : super(key: key);
+  const Onboarding2({super.key});
 
   @override
   State<Onboarding2> createState() => _Onboarding2State();
 }
 
 class _Onboarding2State extends State<Onboarding2> {
-  int _currentIndex = 1;
+  final int _currentIndex = 1;
 
   final int _totalDots = 3;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
+      appBar: AppBar(backgroundColor: Colors.white, elevation: 0),
 
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
             // Image
             Image.asset(
               'assets/images/onboarding2.png',
@@ -39,23 +34,22 @@ class _Onboarding2State extends State<Onboarding2> {
             const SizedBox(height: 30),
 
             // Main Text
-           const Text(
-                "Learn at your own \n pace",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color:  Color.fromARGB(255, 51, 86, 69),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 26,
-                  height: 1.2,
-                ),
+            const Text(
+              "Learn at your own \n pace",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Color.fromARGB(255, 51, 86, 69),
+                fontWeight: FontWeight.bold,
+                fontSize: 26,
+                height: 1.2,
               ),
-            
+            ),
 
             const SizedBox(height: 20),
 
             // Description
             Text(
-          " Watch lessons, track progress and pick up right \nwhere you stopped.",
+              " Watch lessons, track progress and pick up right \nwhere you stopped.",
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.grey[600],
@@ -98,7 +92,7 @@ class _Onboarding2State extends State<Onboarding2> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context)  => const Onboarding3(),
+                        builder: (context) => const Onboarding3(),
                       ),
                     );
                   },

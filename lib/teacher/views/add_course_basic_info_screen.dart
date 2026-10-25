@@ -1,27 +1,27 @@
-
 import 'package:flutter/material.dart';
 import 'package:marefa/constants.dart';
-import 'package:marefa/features/instructor_cources/custom_widgets/course_step_indicator.dart';
+import 'package:marefa/teacher/widgets/course_action_button.dart';
+import 'package:marefa/teacher/widgets/course_step_indicator.dart';
+import 'package:marefa/teacher/widgets/save_draft_button.dart';
 import '../models/course_enums.dart';
-import '../custom_widgets/course_action_button.dart';
-import '../custom_widgets/save_draft_button.dart';
-import 'add_course_content_screen.dart';
- 
+import 'add_course_content_view.dart';
+
 class AddCourseBasicInfoScreen extends StatefulWidget {
   const AddCourseBasicInfoScreen({super.key});
- 
+
   @override
   State<AddCourseBasicInfoScreen> createState() =>
       _AddCourseBasicInfoScreenState();
 }
- 
-class _AddCourseBasicInfoScreenState extends State<AddCourseBasicInfoScreen> {
+
+class _AddCourseBasicInfoScreenState
+    extends State<AddCourseBasicInfoScreen> {
   final formKey = GlobalKey<FormState>();
- 
+
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   final learningController = TextEditingController();
- 
+
   final List<String> categories = [
     'Programming',
     'Design',
@@ -30,10 +30,10 @@ class _AddCourseBasicInfoScreenState extends State<AddCourseBasicInfoScreen> {
     'Science',
     'Other',
   ];
- 
+
   String? selectedCategory;
   CourseLevel? selectedLevel;
- 
+
   @override
   void dispose() {
     titleController.dispose();
@@ -41,7 +41,7 @@ class _AddCourseBasicInfoScreenState extends State<AddCourseBasicInfoScreen> {
     learningController.dispose();
     super.dispose();
   }
- 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,19 +85,21 @@ class _AddCourseBasicInfoScreenState extends State<AddCourseBasicInfoScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
- 
+
                 // Course cover
                 _buildLabel('Course cover'),
                 const SizedBox(height: 8),
                 _buildCoverPicker(),
                 const SizedBox(height: 16),
- 
+
                 // Course title
                 _buildLabel('Course title'),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: titleController,
-                  decoration: _inputDecoration(hint: 'e.g. Flutter Development'),
+                  decoration: _inputDecoration(
+                    hint: 'e.g. Flutter Development',
+                  ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return 'Please enter the course title';
@@ -109,7 +111,7 @@ class _AddCourseBasicInfoScreenState extends State<AddCourseBasicInfoScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
- 
+
                 // Category + Level side by side
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,7 +122,7 @@ class _AddCourseBasicInfoScreenState extends State<AddCourseBasicInfoScreen> {
                   ],
                 ),
                 const SizedBox(height: 16),
- 
+
                 // Description
                 _buildLabel('Course description'),
                 const SizedBox(height: 8),
@@ -142,8 +144,8 @@ class _AddCourseBasicInfoScreenState extends State<AddCourseBasicInfoScreen> {
                   },
                 ),
                 const SizedBox(height: 30),
- 
-               Column(
+
+                Column(
                   children: [
                     CourseActionButton(
                       text: 'Next',
@@ -153,7 +155,7 @@ class _AddCourseBasicInfoScreenState extends State<AddCourseBasicInfoScreen> {
                     const SizedBox(width: 12),
                     SaveDraftButton(onPressed: saveDraft),
                   ],
-                )
+                ),
               ],
             ),
           ),
@@ -161,10 +163,9 @@ class _AddCourseBasicInfoScreenState extends State<AddCourseBasicInfoScreen> {
       ),
     );
   }
- 
+
   // ---------- Widgets ----------
- 
-  
+
   Widget _buildLabel(String text) {
     return Text(
       text,
@@ -175,7 +176,7 @@ class _AddCourseBasicInfoScreenState extends State<AddCourseBasicInfoScreen> {
       ),
     );
   }
- 
+
   Widget _buildCoverPicker() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
@@ -204,12 +205,17 @@ class _AddCourseBasicInfoScreenState extends State<AddCourseBasicInfoScreen> {
                   onTap: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Image selection will be connected later'),
+                        content: Text(
+                          'Image selection will be connected later',
+                        ),
                       ),
                     );
                   },
                   child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 8,
+                    ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -238,7 +244,7 @@ class _AddCourseBasicInfoScreenState extends State<AddCourseBasicInfoScreen> {
       ),
     );
   }
- 
+
   Widget _buildCategoryField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,20 +252,26 @@ class _AddCourseBasicInfoScreenState extends State<AddCourseBasicInfoScreen> {
         _buildLabel('Category'),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
-          value: selectedCategory,
+          initialValue: selectedCategory,
           isExpanded: true,
           icon: const Icon(Icons.keyboard_arrow_down),
           decoration: _inputDecoration(hint: 'Select'),
           items: categories
-              .map((c) => DropdownMenuItem<String>(value: c, child: Text(c)))
+              .map(
+                (c) => DropdownMenuItem<String>(
+                  value: c,
+                  child: Text(c),
+                ),
+              )
               .toList(),
-          onChanged: (value) => setState(() => selectedCategory = value),
+          onChanged: (value) =>
+              setState(() => selectedCategory = value),
           validator: (value) => value == null ? 'Required' : null,
         ),
       ],
     );
   }
- 
+
   Widget _buildLevelField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -267,15 +279,17 @@ class _AddCourseBasicInfoScreenState extends State<AddCourseBasicInfoScreen> {
         _buildLabel('Level'),
         const SizedBox(height: 8),
         DropdownButtonFormField<CourseLevel>(
-          value: selectedLevel,
+          initialValue: selectedLevel,
           isExpanded: true,
           icon: const Icon(Icons.keyboard_arrow_down),
           decoration: _inputDecoration(hint: 'Select'),
           items: CourseLevel.values
-              .map((l) => DropdownMenuItem<CourseLevel>(
-                    value: l,
-                    child: Text(_getLevelName(l)),
-                  ))
+              .map(
+                (l) => DropdownMenuItem<CourseLevel>(
+                  value: l,
+                  child: Text(_getLevelName(l)),
+                ),
+              )
               .toList(),
           onChanged: (value) => setState(() => selectedLevel = value),
           validator: (value) => value == null ? 'Required' : null,
@@ -283,7 +297,7 @@ class _AddCourseBasicInfoScreenState extends State<AddCourseBasicInfoScreen> {
       ],
     );
   }
- 
+
   String _getLevelName(CourseLevel level) {
     switch (level) {
       case CourseLevel.beginner:
@@ -294,7 +308,7 @@ class _AddCourseBasicInfoScreenState extends State<AddCourseBasicInfoScreen> {
         return 'Advanced';
     }
   }
- 
+
   InputDecoration _inputDecoration({required String hint}) {
     OutlineInputBorder border(Color color, [double width = 1]) {
       return OutlineInputBorder(
@@ -302,13 +316,19 @@ class _AddCourseBasicInfoScreenState extends State<AddCourseBasicInfoScreen> {
         borderSide: BorderSide(color: color, width: width),
       );
     }
- 
+
     return InputDecoration(
       hintText: hint,
-      hintStyle: const TextStyle(fontSize: 13, color: Color(0xFF9A9B92)),
+      hintStyle: const TextStyle(
+        fontSize: 13,
+        color: Color(0xFF9A9B92),
+      ),
       filled: true,
       fillColor: const Color(0xFFFFFEFA),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 15),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 14,
+        vertical: 15,
+      ),
       border: border(AppColors.borderColor),
       enabledBorder: border(AppColors.borderColor),
       focusedBorder: border(AppColors.primaryColor, 1.5),
@@ -316,25 +336,25 @@ class _AddCourseBasicInfoScreenState extends State<AddCourseBasicInfoScreen> {
       focusedErrorBorder: border(Colors.red),
     );
   }
- 
+
   // ---------- Actions ----------
- 
+
   void goToNextScreen() {
     if (!formKey.currentState!.validate()) return;
- 
+
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const AddCourseContentScreen(),
+        builder: (context) => const AddCourseContentview(),
       ),
     );
   }
- 
+
   void saveDraft() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Draft saving will be added later')),
+      const SnackBar(
+        content: Text('Draft saving will be added later'),
+      ),
     );
   }
 }
- 
-

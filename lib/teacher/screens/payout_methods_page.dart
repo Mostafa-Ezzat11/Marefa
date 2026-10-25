@@ -68,11 +68,14 @@ class _PayoutMethodsPageState extends State<PayoutMethodsPage> {
               children: [
                 const Text(
                   'Add payout method',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
-                  value: type,
+                  initialValue: type,
                   decoration: const InputDecoration(
                     labelText: 'Payment method',
                     border: OutlineInputBorder(),
@@ -92,7 +95,8 @@ class _PayoutMethodsPageState extends State<PayoutMethodsPage> {
                     ),
                   ],
                   onChanged: (value) {
-                    if (value != null) setSheetState(() => type = value);
+                    if (value != null)
+                      setSheetState(() => type = value);
                   },
                 ),
                 const SizedBox(height: 12),
@@ -103,7 +107,7 @@ class _PayoutMethodsPageState extends State<PayoutMethodsPage> {
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) =>
-                  value == null || value.trim().isEmpty
+                      value == null || value.trim().isEmpty
                       ? 'Enter the account holder name'
                       : null,
                 ),
@@ -122,7 +126,7 @@ class _PayoutMethodsPageState extends State<PayoutMethodsPage> {
                     border: const OutlineInputBorder(),
                   ),
                   validator: (value) =>
-                  value == null || value.trim().length < 6
+                      value == null || value.trim().length < 6
                       ? 'Enter valid account details'
                       : null,
                 ),
@@ -142,9 +146,10 @@ class _PayoutMethodsPageState extends State<PayoutMethodsPage> {
                       _PayoutMethod(
                         name: type,
                         details:
-                        '${nameController.text.trim()} • $maskedDetails',
+                            '${nameController.text.trim()} • $maskedDetails',
                         icon: switch (type) {
-                          'Vodafone Cash' => Icons.phone_android_rounded,
+                          'Vodafone Cash' =>
+                            Icons.phone_android_rounded,
                           'Visa' => Icons.credit_card_rounded,
                           _ => Icons.account_balance_rounded,
                         },
@@ -201,7 +206,9 @@ class _PayoutMethodsPageState extends State<PayoutMethodsPage> {
               Navigator.pop(dialogContext);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Your withdrawal request has been submitted'),
+                  content: Text(
+                    'Your withdrawal request has been submitted',
+                  ),
                 ),
               );
             },
@@ -236,7 +243,10 @@ class _PayoutMethodsPageState extends State<PayoutMethodsPage> {
                 children: [
                   const Text(
                     'Available balance',
-                    style: TextStyle(color: Colors.white70, fontSize: 14),
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 14,
+                    ),
                   ),
                   const SizedBox(height: 6),
                   Text(
@@ -257,7 +267,10 @@ class _PayoutMethodsPageState extends State<PayoutMethodsPage> {
               const Expanded(
                 child: Text(
                   'Choose a payout method',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               TextButton.icon(
@@ -292,11 +305,15 @@ class _PayoutMethodsPageState extends State<PayoutMethodsPage> {
                       padding: const EdgeInsets.all(14),
                       child: Row(
                         children: [
-                          Icon(method.icon, color: AppColors.primaryColor),
+                          Icon(
+                            method.icon,
+                            color: AppColors.primaryColor,
+                          ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   method.name,
@@ -308,7 +325,9 @@ class _PayoutMethodsPageState extends State<PayoutMethodsPage> {
                                 const SizedBox(height: 3),
                                 Text(
                                   method.details,
-                                  style: TextStyle(color: AppColors.subTextColor),
+                                  style: TextStyle(
+                                    color: AppColors.subTextColor,
+                                  ),
                                 ),
                               ],
                             ),
@@ -339,7 +358,10 @@ class _PayoutMethodsPageState extends State<PayoutMethodsPage> {
           Text(
             'Please make sure your payout details are correct before confirming.',
             textAlign: TextAlign.center,
-            style: TextStyle(color: AppColors.subTextColor, fontSize: 12),
+            style: TextStyle(
+              color: AppColors.subTextColor,
+              fontSize: 12,
+            ),
           ),
         ],
       ),

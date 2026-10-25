@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../constants.dart';
 import 'app_card.dart';
 import 'icon_badge.dart';
-import 'stat_item.dart';
+import '../models/stat_item.dart';
 
 class StatCard extends StatelessWidget {
   final StatItem item;

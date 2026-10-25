@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'stat_item.dart';
+import '../models/stat_item.dart';
 import 'stat_card.dart';
 
 /// 2-column grid of [StatCard]s. Used in Home and Earnings pages.

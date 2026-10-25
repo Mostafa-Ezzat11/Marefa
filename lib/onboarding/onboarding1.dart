@@ -1,17 +1,15 @@
-
 import 'package:flutter/material.dart';
-import 'package:marafty1/onboarding/onboarding2.dart';
-import 'package:marafty1/onboarding/userscreen.dart';
+import 'package:marefa/onboarding/onboarding2.dart';
 
 class Onboarding1 extends StatefulWidget {
-  const Onboarding1({Key? key}) : super(key: key);
+  const Onboarding1({super.key});
 
   @override
   State<Onboarding1> createState() => _Onboarding1State();
 }
 
 class _Onboarding1State extends State<Onboarding1> {
-  int _currentIndex = 0;
+  final int _currentIndex = 0;
   final int _totalDots = 3;
 
   // Colors from the logo
@@ -20,10 +18,7 @@ class _Onboarding1State extends State<Onboarding1> {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
+      appBar: AppBar(backgroundColor: Colors.white, elevation: 0),
 
       body: Center(
         child: Column(
@@ -36,23 +31,22 @@ class _Onboarding1State extends State<Onboarding1> {
             ),
             const SizedBox(height: 30),
             const Text(
-                "Learn anything,\n anytime",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color.fromARGB(255, 223, 130, 16),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                  height: 1.2,
-                ),
+              "Learn anything,\n anytime",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Color.fromARGB(255, 223, 130, 16),
+                fontWeight: FontWeight.bold,
+                fontSize: 30,
+                height: 1.2,
               ),
+            ),
 
             const SizedBox(height: 20),
 
             // Description
             Text(
-              'Thousands of courses from expert instructors, \n right in your pocket.'
-            
-              ,style: TextStyle(
+              'Thousands of courses from expert instructors, \n right in your pocket.',
+              style: TextStyle(
                 color: Colors.grey[600],
                 fontSize: 15,
                 height: 1.4,
@@ -61,7 +55,6 @@ class _Onboarding1State extends State<Onboarding1> {
 
             const SizedBox(height: 40),
 
-          
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List<Widget>.generate(
@@ -88,7 +81,7 @@ class _Onboarding1State extends State<Onboarding1> {
               child: SizedBox(
                 width: double.infinity,
                 height: 45,
-               child: ElevatedButton(
+                child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -97,7 +90,7 @@ class _Onboarding1State extends State<Onboarding1> {
                       ),
                     );
                   },
-                 style: ElevatedButton.styleFrom(
+                  style: ElevatedButton.styleFrom(
                     backgroundColor: Color.fromARGB(255, 51, 86, 69),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(45),
@@ -114,12 +107,12 @@ class _Onboarding1State extends State<Onboarding1> {
                   ),
                 ),
               ),
-            )
-          ]
             ),
-         // ],
+          ],
         ),
-      );
+        // ],
+      ),
+    );
     //);
   }
 }

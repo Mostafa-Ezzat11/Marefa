@@ -27,7 +27,7 @@ class Course {
 
   // Course appearance
 
-  /// Optional asset path (thumbnail in lists, header on the details screen).
+  /// Optional asset path (thumbnail in lists, header on the details view).
   /// When null, a placeholder is shown.
   final String? image;
 
@@ -38,7 +38,7 @@ class Course {
   final double? rating;
   final int? reviewCount;
 
-  // Details screen information (all optional: lists don't need them)
+  // Details view information (all optional: lists don't need them)
   final String? level;
   final int? durationHours;
   final String? instructorName;

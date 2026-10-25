@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:marefa/constants.dart';
-import 'package:marefa/features/instructor_cources/custom_widgets/course_action_button.dart';
-import 'package:marefa/features/instructor_cources/screens/instructor_courses_screen.dart';
+import 'package:marefa/teacher/widgets/course_action_button.dart';
+import 'package:marefa/teacher/views/instructor_courses_view.dart';
 
-class SubmittedReviewScreen extends StatelessWidget {
-  const SubmittedReviewScreen({Key? key}) : super(key: key);
+class SubmittedReviewview extends StatelessWidget {
+  const SubmittedReviewview({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,10 @@ class SubmittedReviewScreen extends StatelessWidget {
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 24.0,
+            vertical: 16.0,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -48,15 +51,22 @@ class SubmittedReviewScreen extends StatelessWidget {
               const Text(
                 "Your course has been sent to our team for review. We’ll let you know once it’s approved and live for students.",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 15, color: Colors.grey, height: 1.5),
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.grey,
+                  height: 1.5,
+                ),
               ),
               const Spacer(),
 
               CourseActionButton(
                 text: "Back to Courses",
                 onPressed: () {
-                  Navigator.of(context).pushReplacement(  
-                    MaterialPageRoute(builder: (context) => const InstructorCoursesScreen()),
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          const InstructorCoursesview(),
+                    ),
                   );
                 },
               ),

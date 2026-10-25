@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import '../../constants.dart';
 import 'app_card.dart';
 import 'earnings_bar_chart.dart';
-import 'earnings_period.dart';
-
+import '../models/earnings_period.dart';
 
 class EarningsOverviewCard extends StatelessWidget {
   final List<EarningsPeriod> periods;
@@ -58,10 +57,16 @@ class EarningsOverviewCard extends StatelessWidget {
         children: [
           Text(
             selected.label,
-            style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey.shade600,
+            ),
           ),
-          Icon(Icons.keyboard_arrow_down_rounded,
-              size: 18, color: Colors.grey.shade600),
+          Icon(
+            Icons.keyboard_arrow_down_rounded,
+            size: 18,
+            color: Colors.grey.shade600,
+          ),
         ],
       ),
     );

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:marefa/constants.dart';
-import 'package:marefa/features/instructor_cources/custom_widgets/course_action_button.dart';
+import 'package:marefa/teacher/widgets/course_action_button.dart';
 import '../models/instructor_course_model.dart';
 import '../models/course_enums.dart';
-import '../custom_widgets/course_status_chip.dart';
+import '../widgets/course_status_chip.dart';
 
-class InstructorCourseDetailsScreen extends StatelessWidget {
+class InstructorCourseDetailsview extends StatelessWidget {
   final InstructorCourseModel course;
 
-  const InstructorCourseDetailsScreen({super.key, required this.course});
+  const InstructorCourseDetailsview({
+    super.key,
+    required this.course,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +61,10 @@ class InstructorCourseDetailsScreen extends StatelessWidget {
   // Header
   Widget _buildHeader(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 8,
+      ),
       child: Row(
         children: [
           IconButton(
@@ -96,7 +102,9 @@ class InstructorCourseDetailsScreen extends StatelessWidget {
         color: const Color(0xFFDCE8E0),
         borderRadius: BorderRadius.circular(16),
       ),
-      child: course.thumbnailUrl != null && course.thumbnailUrl!.isNotEmpty
+      child:
+          course.thumbnailUrl != null &&
+              course.thumbnailUrl!.isNotEmpty
           ? ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: Image.network(
@@ -141,7 +149,10 @@ class InstructorCourseDetailsScreen extends StatelessWidget {
           '${course.category}  •  '
           '${_getLevelName()}  •  '
           '${course.lessonsCount} lessons',
-          style: const TextStyle(fontSize: 12, color: Color(0xFF85877D)),
+          style: const TextStyle(
+            fontSize: 12,
+            color: Color(0xFF85877D),
+          ),
         ),
 
         const SizedBox(height: 12),
@@ -202,7 +213,10 @@ class InstructorCourseDetailsScreen extends StatelessWidget {
     required String title,
   }) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 17, horizontal: 5),
+      padding: const EdgeInsets.symmetric(
+        vertical: 17,
+        horizontal: 5,
+      ),
       decoration: BoxDecoration(
         color: const Color(0xFFFFFEFA),
         borderRadius: BorderRadius.circular(14),
@@ -228,7 +242,10 @@ class InstructorCourseDetailsScreen extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 10, color: Color(0xFF85877D)),
+            style: const TextStyle(
+              fontSize: 10,
+              color: Color(0xFF85877D),
+            ),
           ),
         ],
       ),
@@ -334,7 +351,10 @@ class InstructorCourseDetailsScreen extends StatelessWidget {
             ),
             child: const Text(
               'No sections or lessons added yet.',
-              style: TextStyle(fontSize: 12, color: Color(0xFF85877D)),
+              style: TextStyle(
+                fontSize: 12,
+                color: Color(0xFF85877D),
+              ),
             ),
           )
         else
@@ -365,7 +385,10 @@ class InstructorCourseDetailsScreen extends StatelessWidget {
                   if (section.lessons.isEmpty)
                     const Text(
                       'No lessons in this section.',
-                      style: TextStyle(fontSize: 12, color: Color(0xFF85877D)),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF85877D),
+                      ),
                     ),
 
                   for (var lesson in section.lessons)
@@ -374,7 +397,8 @@ class InstructorCourseDetailsScreen extends StatelessWidget {
                       child: Row(
                         children: [
                           Icon(
-                            lesson.contentType == LessonContentType.video
+                            lesson.contentType ==
+                                    LessonContentType.video
                                 ? Icons.play_circle_outline
                                 : Icons.description_outlined,
                             color: AppColors.primaryColor,
@@ -394,7 +418,8 @@ class InstructorCourseDetailsScreen extends StatelessWidget {
                           ),
 
                           Text(
-                            lesson.contentType == LessonContentType.video
+                            lesson.contentType ==
+                                    LessonContentType.video
                                 ? 'Video'
                                 : 'Document',
                             style: const TextStyle(
@@ -419,9 +444,9 @@ class InstructorCourseDetailsScreen extends StatelessWidget {
       text: 'Edit Course',
       icon: Icons.edit_outlined,
       onPressed: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('coming soon')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('coming soon')));
       },
     );
   }

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:marafty1/onboarding/userscreen.dart';
-import 'package:marafty1/pages/login.dart';
+import 'package:marefa/general%20pages/login.dart';
 
 class Onboarding3 extends StatefulWidget {
-  const Onboarding3({Key? key}) : super(key: key);
+  const Onboarding3({super.key});
 
   @override
   State<Onboarding3> createState() => _onboarding3();
 }
 
 class _onboarding3 extends State<Onboarding3> {
-  int _currentIndex = 2;
+  final int _currentIndex = 2;
 
   final int _totalDots = 3;
 
@@ -19,18 +18,15 @@ class _onboarding3 extends State<Onboarding3> {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
- Image.asset(
+            Image.asset(
               'assets/images/onboarding3.png',
               width: 300,
               height: 350,
             ),
-
-          
 
             const SizedBox(height: 30),
 
@@ -50,7 +46,7 @@ class _onboarding3 extends State<Onboarding3> {
 
             // Description
             Text(
-             "Finish courses, get certified and show your skills\n to the world", 
+              "Finish courses, get certified and show your skills\n to the world",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
@@ -91,12 +87,16 @@ class _onboarding3 extends State<Onboarding3> {
                 height: 45,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(
-                      builder: (context)=> Login()));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Login(),
+                      ),
+                    );
                   },
 
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:  Color.fromARGB(255, 51, 86, 69),
+                    backgroundColor: Color.fromARGB(255, 51, 86, 69),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(45),
                     ),
@@ -114,10 +114,9 @@ class _onboarding3 extends State<Onboarding3> {
                 ),
               ),
             ),
-          ]
-        )
+          ],
         ),
-  
-      );
+      ),
+    );
   }
 }

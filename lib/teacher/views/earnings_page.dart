@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../../constants.dart';
 import '../widgets/app_card.dart';
 import '../widgets/earnings_overview_card.dart';
-import '../widgets/earnings_period.dart';
-import '../widgets/stat_item.dart';
+import '../models/earnings_period.dart';
+import '../models/stat_item.dart';
 import '../widgets/stats_grid.dart';
 import '../widgets/primary_button.dart';
 import 'payout_methods_page.dart';
@@ -26,7 +26,7 @@ class _EarningsPageState extends State<EarningsPage> {
     ),
     StatItem(
       icon: Icons.calendar_month_rounded,
-      color: AppColors.blue,
+      color: AppColors.orangeColor,
       value: 'EGP 680',
       label: 'This Month',
     ),
@@ -53,9 +53,31 @@ class _EarningsPageState extends State<EarningsPage> {
     EarningsPeriod(
       label: 'Last 30 days',
       chartLabels: [
-        '1', '3', '6', '9', '12', '15', '18', '21', '24', '27', '30'
+        '1',
+        '3',
+        '6',
+        '9',
+        '12',
+        '15',
+        '18',
+        '21',
+        '24',
+        '27',
+        '30',
       ],
-      chartValues: [90, 210, 130, 110, 200, 170, 260, 230, 150, 240, 380],
+      chartValues: [
+        90,
+        210,
+        130,
+        110,
+        200,
+        170,
+        260,
+        230,
+        150,
+        240,
+        380,
+      ],
     ),
   ];
 
@@ -64,7 +86,8 @@ class _EarningsPageState extends State<EarningsPage> {
   void _openPayoutMethods() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => const PayoutMethodsPage(availableBalance: 360),
+        builder: (_) =>
+            const PayoutMethodsPage(availableBalance: 360),
       ),
     );
   }
@@ -85,23 +108,41 @@ class _EarningsPageState extends State<EarningsPage> {
               const SizedBox(height: 20),
               AppCard(
                 padding: const EdgeInsets.all(18),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  const Text('Available to Withdraw', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.primaryColor)),
-                  const SizedBox(height: 4),
-                  const Text('EGP 360.00', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: AppColors.largeTextColor)),
-                  const SizedBox(height: 16),
-                  PrimaryButton(
-                    text: 'Request Payout',
-                    icon: Icons.north_east_rounded,
-                    onPressed: _openPayoutMethods,
-                  ),
-                ]),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Available to Withdraw',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'EGP 360.00',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.largeTextColor,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    PrimaryButton(
+                      text: 'Request Payout',
+                      icon: Icons.north_east_rounded,
+                      onPressed: _openPayoutMethods,
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 20),
               EarningsOverviewCard(
                 periods: _periods,
                 selected: _selectedPeriod,
-                onPeriodChanged: (p) => setState(() => _selectedPeriod = p),
+                onPeriodChanged: (p) =>
+                    setState(() => _selectedPeriod = p),
               ),
             ],
           ),
@@ -124,8 +165,10 @@ class _EarningsPageState extends State<EarningsPage> {
         const Spacer(),
         IconButton(
           onPressed: () {},
-          icon: const Icon(Icons.more_vert_rounded,
-              color: AppColors.largeTextColor),
+          icon: const Icon(
+            Icons.more_vert_rounded,
+            color: AppColors.largeTextColor,
+          ),
         ),
       ],
     );
