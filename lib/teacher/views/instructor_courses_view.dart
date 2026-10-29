@@ -306,7 +306,7 @@ class _InstructorCoursesviewstate
             Icon(
               Icons.menu_book_outlined,
               size: 42,
-              color: AppColors.primaryColor.withOpacity(0.7),
+              color: AppColors.primaryColor.withValues(alpha: 0.7),
             ),
 
             const SizedBox(height: 12),

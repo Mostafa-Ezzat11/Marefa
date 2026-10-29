@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:marefa/general%20pages/login.dart';
-import 'package:marefa/general%20pages/otpv.dart';
+import 'package:marefa/general%20pages/otp_verification.dart';
 
 const _green = Color(0xFF2A7A55);
 const _fill = Color(0xFFF5EFE6);

@@ -7,14 +7,14 @@ const _beige = Color(0xffd9d2c3);
 const _red = Color(0xffb3363b);
 const _line = Color(0xffe6dccb);
 
-class Security extends StatefulWidget {
-  const Security({super.key});
+class SecurityView extends StatefulWidget {
+  const SecurityView({super.key});
 
   @override
-  State<Security> createState() => _SecurityState();
+  State<SecurityView> createState() => _SecurityViewState();
 }
 
-class _SecurityState extends State<Security> {
+class _SecurityViewState extends State<SecurityView> {
   // كل Switch له قيمته الخاصة
   bool twoFactor = true;
   bool biometric = true;

@@ -18,14 +18,15 @@ class _CardData {
   const _CardData(this.brand, this.last4, this.holder, this.expiry);
 }
 
-class PaymentMethods extends StatefulWidget {
-  const PaymentMethods({super.key});
+class PaymentMethodsView extends StatefulWidget {
+  const PaymentMethodsView({super.key});
 
   @override
-  State<PaymentMethods> createState() => _PaymentMethodsState();
+  State<PaymentMethodsView> createState() =>
+      _PaymentMethodsViewState();
 }
 
-class _PaymentMethodsState extends State<PaymentMethods> {
+class _PaymentMethodsViewState extends State<PaymentMethodsView> {
   final List<_CardData> _cards = [
     const _CardData('Visa', '4417', 'Ahmed Mohamed', '08/28'),
     const _CardData('Mastercard', '9021', 'Ahmed Mohamed', '02/27'),
@@ -54,7 +55,10 @@ class _PaymentMethodsState extends State<PaymentMethods> {
         elevation: 0,
         title: Text(
           'Payment methods',
-          style: GoogleFonts.lora(fontSize: 20, fontWeight: FontWeight.bold),
+          style: GoogleFonts.lora(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: SafeArea(
@@ -63,7 +67,10 @@ class _PaymentMethodsState extends State<PaymentMethods> {
           children: [
             Text(
               'Cards used to buy courses',
-              style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+              style: TextStyle(
+                color: Colors.grey.shade600,
+                fontSize: 14,
+              ),
             ),
             const SizedBox(height: 14),
 
@@ -74,7 +81,8 @@ class _PaymentMethodsState extends State<PaymentMethods> {
                 child: Dismissible(
                   key: ObjectKey(card),
                   direction: DismissDirection.endToStart,
-                  onDismissed: (_) => setState(() => _cards.remove(card)),
+                  onDismissed: (_) =>
+                      setState(() => _cards.remove(card)),
                   background: Container(
                     alignment: Alignment.centerRight,
                     padding: const EdgeInsets.only(right: 20),
@@ -82,7 +90,10 @@ class _PaymentMethodsState extends State<PaymentMethods> {
                       color: const Color(0xFFB3363B),
                       borderRadius: BorderRadius.circular(18),
                     ),
-                    child: const Icon(Icons.delete_outline, color: Colors.white),
+                    child: const Icon(
+                      Icons.delete_outline,
+                      color: Colors.white,
+                    ),
                   ),
                   child: _CardTile(card: card),
                 ),
@@ -97,11 +108,15 @@ class _PaymentMethodsState extends State<PaymentMethods> {
                   foregroundColor: _green,
                   side: const BorderSide(color: _green, width: 1.5),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
                 child: const Text(
                   '+ Add new card',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -131,14 +146,18 @@ class _CardTile extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: isVisa ? [_green, _greenDark] : [_orangeLight, _orange],
+          colors: isVisa
+              ? [_green, _greenDark]
+              : [_orangeLight, _orange],
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(card.brand,
-              style: const TextStyle(color: Colors.white, fontSize: 13)),
+          Text(
+            card.brand,
+            style: const TextStyle(color: Colors.white, fontSize: 13),
+          ),
           const SizedBox(height: 14),
           Text(
             '••••  ••••  ••••  ${card.last4}',
@@ -187,30 +206,32 @@ class _AddCardSheetState extends State<_AddCardSheet> {
   void _save() {
     if (!_formKey.currentState!.validate()) return;
     final digits = _number.text.replaceAll(' ', '');
-  
-    widget.onAdd(_CardData(
-      digits.startsWith('4') ? 'Visa' : 'Mastercard',
-      digits.substring(digits.length - 4),
-      _name.text.trim(),
-      _expiry.text.trim(),
-    ));
+
+    widget.onAdd(
+      _CardData(
+        digits.startsWith('4') ? 'Visa' : 'Mastercard',
+        digits.substring(digits.length - 4),
+        _name.text.trim(),
+        _expiry.text.trim(),
+      ),
+    );
     Navigator.pop(context);
   }
 
   OutlineInputBorder _b(Color c) => OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: c),
-      );
+    borderRadius: BorderRadius.circular(12),
+    borderSide: BorderSide(color: c),
+  );
 
   InputDecoration _dec(String label) => InputDecoration(
-        labelText: label,
-        filled: true,
-        fillColor: _fill,
-        enabledBorder: _b(_border),
-        focusedBorder: _b(_green),
-        errorBorder: _b(Colors.red),
-        focusedErrorBorder: _b(Colors.red),
-      );
+    labelText: label,
+    filled: true,
+    fillColor: _fill,
+    enabledBorder: _b(_border),
+    focusedBorder: _b(_green),
+    errorBorder: _b(Colors.red),
+    focusedErrorBorder: _b(Colors.red),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -227,9 +248,13 @@ class _AddCardSheetState extends State<_AddCardSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Add new card',
-                style: GoogleFonts.lora(
-                    fontSize: 20, fontWeight: FontWeight.bold)),
+            Text(
+              'Add new card',
+              style: GoogleFonts.lora(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _number,
@@ -239,24 +264,26 @@ class _AddCardSheetState extends State<_AddCardSheet> {
                 LengthLimitingTextInputFormatter(16),
               ],
               decoration: _dec('Card number'),
-              validator: (v) =>
-                  v != null && v.length == 16 ? null : 'Enter 16 digits',
+              validator: (v) => v != null && v.length == 16
+                  ? null
+                  : 'Enter 16 digits',
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _name,
               textCapitalization: TextCapitalization.words,
               decoration: _dec('Name on card'),
-              validator: (v) =>
-                  v == null || v.trim().isEmpty ? 'Enter the name' : null,
+              validator: (v) => v == null || v.trim().isEmpty
+                  ? 'Enter the name'
+                  : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _expiry,
               keyboardType: TextInputType.datetime,
               decoration: _dec('Expiry (MM/YY)'),
-              validator: (v) => RegExp(r'^(0[1-9]|1[0-2])/\d{2}$')
-                      .hasMatch(v ?? '')
+              validator: (v) =>
+                  RegExp(r'^(0[1-9]|1[0-2])/\d{2}$').hasMatch(v ?? '')
                   ? null
                   : 'Use MM/YY',
             ),
@@ -271,11 +298,16 @@ class _AddCardSheetState extends State<_AddCardSheet> {
                   foregroundColor: Colors.white,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14)),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                 ),
-                child: const Text('Save card',
-                    style:
-                        TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                child: const Text(
+                  'Save card',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
           ],

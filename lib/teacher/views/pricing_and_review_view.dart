@@ -155,7 +155,7 @@ class _PricingHeader extends StatelessWidget {
         Text(
           'Set a fair price, check the details, and send your updates for review.',
           style: textTheme.bodySmall?.copyWith(
-            color: AppColors.largeTextColor.withOpacity(0.65),
+            color: AppColors.largeTextColor.withValues(alpha: 0.65),
           ),
         ),
       ],
@@ -266,7 +266,7 @@ class _PriceField extends StatelessWidget {
             filled: true,
             fillColor: enabled
                 ? Colors.white
-                : AppColors.borderColor.withOpacity(0.6),
+                : AppColors.borderColor.withValues(alpha: 0.6),
             hintText: enabled ? '0.00' : 'Free',
             suffixText: 'LE',
             suffixStyle: const TextStyle(

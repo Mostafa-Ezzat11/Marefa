@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:marefa/student/views/student_main_view.dart';
 import 'signup.dart';
-import 'forgetpas.dart';
+import 'forget_password.dart';
 
 const _green = Color(0xFF2A7A55);
 const _fill = Color(0xFFF5EFE6);
@@ -30,8 +31,10 @@ class _LoginState extends State<Login> {
   void _login() {
     if (!_formKey.currentState!.validate()) return;
 
-    // Navigator.pushAndRemoveUntil(context,
-    //   MaterialPageRoute(builder: (_) => const MyProfileScreen()), (r) => false);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => StudentMainView()),
+    );
   }
 
   @override
@@ -104,7 +107,7 @@ class _LoginState extends State<Login> {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const ForgotPassword(),
+                        builder: (_) => const ForgetPassword(),
                       ),
                     ),
                     child: const Text(

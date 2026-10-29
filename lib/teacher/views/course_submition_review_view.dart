@@ -4,7 +4,7 @@ import 'package:marefa/teacher/widgets/course_action_button.dart';
 import 'package:marefa/teacher/views/instructor_courses_view.dart';
 
 class SubmittedReviewview extends StatelessWidget {
-  const SubmittedReviewview({Key? key}) : super(key: key);
+  const SubmittedReviewview({super.key});
 
   @override
   Widget build(BuildContext context) {

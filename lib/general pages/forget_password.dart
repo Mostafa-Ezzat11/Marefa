@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'otpv.dart';
+import 'package:marefa/general%20pages/otp_verification.dart';
 
 const _green = Color(0xFF2A7A55);
 const _fill = Color(0xFFF5EFE6);
 const _border = Color(0xFFE6DCCB);
 
-class ForgotPassword extends StatefulWidget {
-  const ForgotPassword({super.key});
+class ForgetPassword extends StatefulWidget {
+  const ForgetPassword({super.key});
 
   @override
-  State<ForgotPassword> createState() => _ForgotPasswordState();
+  State<ForgetPassword> createState() => _ForgetPasswordState();
 }
 
-class _ForgotPasswordState extends State<ForgotPassword> {
+class _ForgetPasswordState extends State<ForgetPassword> {
   final _formKey = GlobalKey<FormState>();
   final _contact = TextEditingController();
 
@@ -29,15 +29,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => OtpVerification(contact: _contact.text.trim()),
+        builder: (_) =>
+            OtpVerification(contact: _contact.text.trim()),
       ),
     );
   }
 
   OutlineInputBorder _b(Color c) => OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: c),
-      );
+    borderRadius: BorderRadius.circular(12),
+    borderSide: BorderSide(color: c),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +67,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     color: const Color(0xFFD6EBDF),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: const Icon(Icons.lock_reset, color: _green, size: 30),
+                  child: const Icon(
+                    Icons.lock_reset,
+                    color: _green,
+                    size: 30,
+                  ),
                 ),
 
                 const SizedBox(height: 20),
@@ -75,21 +80,30 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 Text(
                   'Forgot password?',
                   style: GoogleFonts.lora(
-                      fontSize: 24, fontWeight: FontWeight.bold),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   "Enter your email or phone and we'll send you a code to reset your password.",
                   style: TextStyle(
-                      color: Colors.grey.shade600, fontSize: 14, height: 1.4),
+                    color: Colors.grey.shade600,
+                    fontSize: 14,
+                    height: 1.4,
+                  ),
                 ),
 
                 const SizedBox(height: 24),
 
                 // ================= FIELD =================
-                const Text('Email or phone',
-                    style:
-                        TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                const Text(
+                  'Email or phone',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 const SizedBox(height: 6),
                 TextFormField(
                   controller: _contact,
@@ -100,12 +114,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   style: const TextStyle(fontSize: 14),
                   decoration: InputDecoration(
                     hintText: 'you@example.com',
-                    hintStyle:
-                        TextStyle(color: Colors.grey.shade500, fontSize: 14),
+                    hintStyle: TextStyle(
+                      color: Colors.grey.shade500,
+                      fontSize: 14,
+                    ),
                     filled: true,
                     fillColor: _fill,
                     contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 14),
+                      horizontal: 14,
+                      vertical: 14,
+                    ),
                     enabledBorder: _b(_border),
                     focusedBorder: _b(_green),
                     errorBorder: _b(Colors.red),
@@ -126,11 +144,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       foregroundColor: Colors.white,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14)),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
                     ),
-                    child: const Text('Send code',
-                        style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.bold)),
+                    child: const Text(
+                      'Send code',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
 
@@ -143,9 +166,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     child: const Text(
                       'Back to Log In',
                       style: TextStyle(
-                          color: _green,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600),
+                        color: _green,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),

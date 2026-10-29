@@ -95,8 +95,9 @@ class _PayoutMethodsPageState extends State<PayoutMethodsPage> {
                     ),
                   ],
                   onChanged: (value) {
-                    if (value != null)
+                    if (value != null) {
                       setSheetState(() => type = value);
+                    }
                   },
                 ),
                 const SizedBox(height: 12),

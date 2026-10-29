@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marefa/teacher/models/activity_item.dart';
 import 'package:marefa/teacher/models/stat_item.dart';
+import 'package:marefa/teacher/views/add_course_basic_info_view.dart';
 import '../../constants.dart';
 import '../widgets/activity_tile.dart';
 import '../widgets/home_header.dart';
@@ -80,7 +81,14 @@ class TeacherHomePage extends StatelessWidget {
               PrimaryButton(
                 text: 'Create Course',
                 icon: Icons.add_circle_outline_rounded,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddCourseBasicInfoview(),
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 20),
               const StatsGrid(items: _stats),

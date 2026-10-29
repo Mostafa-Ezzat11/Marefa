@@ -16,7 +16,15 @@ class BottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
+        border: Border(
+          top: BorderSide(color: Color(0xFFD0D0CC), width: 1),
+        ),
+      ),
       child: SafeArea(
         top: false,
         child: Padding(

@@ -9,14 +9,14 @@ import 'package:marefa/student/widgets/hero_banner.dart';
 import 'package:marefa/student/widgets/home_search_bar.dart';
 import 'package:marefa/student/widgets/section_header.dart';
 
-class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+class StudentHomeView extends StatefulWidget {
+  const StudentHomeView({super.key});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  State<StudentHomeView> createState() => _StudentHomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _StudentHomeViewState extends State<StudentHomeView> {
   static const List<CourseCategory> _categories = [
     CourseCategory(
       name: 'Programming',
@@ -79,7 +79,9 @@ class _HomeViewState extends State<HomeView> {
             HomeSearchBar(
               readOnly: true,
               onTap: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(builder: (_) => const SearchView()),
+                MaterialPageRoute<void>(
+                  builder: (_) => const SearchView(),
+                ),
               ),
             ),
             const SizedBox(height: 16),

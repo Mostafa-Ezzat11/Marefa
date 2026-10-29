@@ -6,17 +6,19 @@ const _orange = Color(0xFFE8821E);
 const _fill = Color(0xFFF5EFE6);
 const _border = Color(0xFFE6DCCB);
 
-class EditProfile extends StatefulWidget {
-  const EditProfile({super.key});
+class EditProfileView extends StatefulWidget {
+  const EditProfileView({super.key});
 
   @override
-  State<EditProfile> createState() => _EditProfileState();
+  State<EditProfileView> createState() => _EditProfileViewState();
 }
 
-class _EditProfileState extends State<EditProfile> {
+class _EditProfileViewState extends State<EditProfileView> {
   final _formKey = GlobalKey<FormState>();
   final _name = TextEditingController(text: 'Tasbeeh Ahmed');
-  final _email = TextEditingController(text: 'tasbeeh.ahmed@gmail.com');
+  final _email = TextEditingController(
+    text: 'tasbeeh.ahmed@gmail.com',
+  );
   final _phone = TextEditingController(text: '+20 123 456 7890');
   final _bio = TextEditingController(text: 'Flutter learner');
 
@@ -51,7 +53,10 @@ class _EditProfileState extends State<EditProfile> {
         elevation: 0,
         title: Text(
           'Edit profile',
-          style: GoogleFonts.lora(fontSize: 20, fontWeight: FontWeight.bold),
+          style: GoogleFonts.lora(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: SafeArea(
@@ -92,7 +97,10 @@ class _EditProfileState extends State<EditProfile> {
                             decoration: BoxDecoration(
                               color: _orange,
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 2),
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 2,
+                              ),
                             ),
                             child: const Icon(
                               Icons.edit,
@@ -113,8 +121,9 @@ class _EditProfileState extends State<EditProfile> {
                   label: 'Full name',
                   controller: _name,
                   onChanged: (_) => setState(() {}),
-                  validator: (v) =>
-                      v == null || v.trim().isEmpty ? 'Enter your name' : null,
+                  validator: (v) => v == null || v.trim().isEmpty
+                      ? 'Enter your name'
+                      : null,
                 ),
                 _Field(
                   label: 'Email',
@@ -198,7 +207,10 @@ class _Field extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           const SizedBox(height: 6),
           TextFormField(

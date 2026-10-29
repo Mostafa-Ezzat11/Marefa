@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:marefa/general%20pages/login.dart';
 
-class Logigsignupselection extends StatefulWidget {
-  const Logigsignupselection({super.key});
+class LoginSignUpSelection extends StatefulWidget {
+  const LoginSignUpSelection({super.key});
 
   @override
-  State<Logigsignupselection> createState() =>
-      _LogigsignupselectionState();
+  State<LoginSignUpSelection> createState() =>
+      _LoginSignUpSelectionState();
 }
 
-class _LogigsignupselectionState extends State<Logigsignupselection> {
+class _LoginSignUpSelectionState extends State<LoginSignUpSelection> {
   String? _selectedtype = "Login"; // يبدأ على Login
 
   @override
