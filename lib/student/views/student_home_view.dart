@@ -42,6 +42,12 @@ class _StudentHomeViewState extends State<StudentHomeView> {
       iconColor: Color(0xFFB84A4A),
       backgroundColor: Color(0xFFF3DEDA),
     ),
+    CourseCategory(
+      name: 'Maths',
+      icon: Icons.calculate_outlined,
+      iconColor: Color(0xFF8C7A32),
+      backgroundColor: Color(0xFFF5EED5),
+    ),
   ];
 
   static const List<Course> _courses = [
@@ -79,15 +85,20 @@ class _StudentHomeViewState extends State<StudentHomeView> {
             HomeSearchBar(
               readOnly: true,
               onTap: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => const SearchView(),
-                ),
+                MaterialPageRoute<void>(builder: (_) => const SearchView()),
               ),
             ),
             const SizedBox(height: 16),
             const HeroBanner(),
             const SizedBox(height: 24),
-            const SectionHeader(title: 'Categories'),
+            const Text(
+              'Categories',
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: AppColors.largeTextColor,
+              ),
+            ),
             const SizedBox(height: 16),
             Row(
               children: [

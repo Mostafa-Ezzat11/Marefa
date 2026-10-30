@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marefa/constants.dart';
+import 'package:marefa/student/views/search_view.dart';
 
 class HeroBanner extends StatelessWidget {
   const HeroBanner({super.key, this.imageAsset, this.onExplore});
@@ -81,12 +82,32 @@ class HeroBanner extends StatelessWidget {
                               ),
                             ],
                           ),
-                          child: const Text(
-                            'Explore Courses',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.primaryDarkColor,
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(8),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const SearchView(),
+                                  ),
+                                );
+                              },
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 4,
+                                ),
+                                child: Text(
+                                  'Explore Courses',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.primaryDarkColor,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),

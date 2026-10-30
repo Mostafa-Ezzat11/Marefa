@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marefa/constants.dart';
 import 'package:marefa/student/views/student_main_view.dart';
-import 'package:marefa/teacher/views/teacher_main_page.dart';
 
 void main() {
   runApp(Marefa());

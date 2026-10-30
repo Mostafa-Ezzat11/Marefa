@@ -5,6 +5,8 @@ import 'package:marefa/student/models/lesson_model.dart';
 import 'package:marefa/student/widgets/info_chip.dart';
 import 'package:marefa/student/widgets/instructor_tile.dart';
 import 'package:marefa/student/widgets/lesson_card.dart';
+import 'package:marefa/student/models/course_pdf_model.dart';
+import 'package:marefa/student/widgets/course_pdf_section.dart';
 
 class CourseDetailsView extends StatelessWidget {
   const CourseDetailsView({super.key, required this.course, this.onAddToCart});
@@ -14,7 +16,6 @@ class CourseDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final mutedText = AppColors.largeTextColor.withValues(alpha: 0.6);
     final rating = course.rating;
     final level = course.level;
@@ -28,6 +29,19 @@ class CourseDetailsView extends StatelessWidget {
       LessonModel(id: 2, title: 'Getting Started', duration: '10 min'),
       LessonModel(id: 3, title: 'Core Concepts', duration: '15 min'),
       LessonModel(id: 4, title: 'Practical Example', duration: '12 min'),
+    ];
+    const pdfs = [
+      CoursePdfModel(
+        name: 'Flutter Complete Guide.pdf',
+        size: '2.4 MB',
+        description: 'Full reference covering widgets, layouts and navigation.',
+      ),
+      CoursePdfModel(
+        name: 'State Management Cheat Sheet.pdf',
+        size: '850 KB',
+        description: 'Quick comparison of the most common approaches.',
+      ),
+      CoursePdfModel(name: 'Practice Exercises.pdf', size: '1.2 MB'),
     ];
 
     return Scaffold(
@@ -53,7 +67,7 @@ class CourseDetailsView extends StatelessWidget {
                     ),
                   ),
 
-            //RATING AND REVIEWS
+                  //RATING AND REVIEWS
 
                   // if (rating != null && course.hasRating) ...[
                   //   const SizedBox(height: 10),
@@ -68,7 +82,6 @@ class CourseDetailsView extends StatelessWidget {
                   //     ],
                   //   ),
                   // ],
-
                   const SizedBox(height: 16),
 
                   Wrap(
@@ -131,39 +144,14 @@ class CourseDetailsView extends StatelessWidget {
                     }),
                   ],
 
+                  const SizedBox(height: 20),
+
+                  const CoursePdfSection(pdfs: pdfs),
                 ],
               ),
             ),
           ),
         ],
-      ),
-
-      bottomNavigationBar: SafeArea(
-        child: GestureDetector(
-          onTap: (){},
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
-            child: SizedBox(
-              height: 52,
-              child: ElevatedButton(
-                onPressed: onAddToCart,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryColor,
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                child: Text('Unlock Your Potential • ${course.formattedPrice}'),
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }
