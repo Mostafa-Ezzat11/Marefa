@@ -91,7 +91,7 @@ class _StudentHomeViewState extends State<StudentHomeView> {
             const SizedBox(height: 16),
             const HeroBanner(),
             const SizedBox(height: 24),
-            const Text(
+            Text(
               'Categories',
               style: const TextStyle(
                 fontSize: 18,

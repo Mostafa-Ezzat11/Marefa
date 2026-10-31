@@ -143,15 +143,41 @@ class CourseDetailsView extends StatelessWidget {
                       );
                     }),
                   ],
-
                   const SizedBox(height: 20),
-
                   const CoursePdfSection(pdfs: pdfs),
                 ],
               ),
             ),
           ),
         ],
+      ),
+
+      bottomNavigationBar: SafeArea(
+        child: GestureDetector(
+          onTap: () {},
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+            child: SizedBox(
+              height: 52,
+              child: ElevatedButton(
+                onPressed: onAddToCart,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryColor,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                child: Text('Unlock Your Potential • ${course.formattedPrice}'),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -26,7 +26,7 @@ class SectionHeader extends StatelessWidget {
           onTap: onSeeAll,
           behavior: HitTestBehavior.opaque,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
+            padding: EdgeInsets.symmetric(vertical: 4),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
