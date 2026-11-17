@@ -53,7 +53,7 @@ class _LoginState extends State<Login> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Welcome back',
+                  'Welcome back 👋',
                   style: GoogleFonts.lora(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -158,12 +158,8 @@ class _LoginState extends State<Login> {
                 // ================= SOCIAL =================
                 _SocialButton(
                   label: 'Continue with Google',
+                  icon: 'assets/images/icon-google.png',
                   onTap: () {}, // TODO: Google sign-in
-                ),
-                const SizedBox(height: 12),
-                _SocialButton(
-                  label: 'Continue with Apple',
-                  onTap: () {}, // TODO: Apple sign-in
                 ),
 
                 const SizedBox(height: 24),
@@ -210,8 +206,13 @@ class _LoginState extends State<Login> {
 class _SocialButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
+  final String icon;
 
-  const _SocialButton({required this.label, required this.onTap});
+  const _SocialButton({
+    required this.label,
+    required this.onTap,
+    required this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -228,12 +229,19 @@ class _SocialButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        child: Text(
-          label,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-          ),
+        child: Row(
+          spacing: 10,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Image.asset(icon, width: 26, height: 26),
+          ],
         ),
       ),
     );

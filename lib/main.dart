@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:marefa/constants.dart';
-import 'package:marefa/student/views/student_main_view.dart';
-import 'package:marefa/teacher/views/teacher_main_page.dart';
+import 'package:marefa/general%20pages/login.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
-  runApp(Marefa());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(const Marefa());
 }
 
 class Marefa extends StatelessWidget {
@@ -19,7 +26,7 @@ class Marefa extends StatelessWidget {
         fontFamily: 'OpenSans',
         scaffoldBackgroundColor: AppColors.backgroundColor,
       ),
-      home: StudentMainView(), //Scaffold(
+      home: Login(), //Scaffold(
       //   body: PaymentSuccessfulView(),
       //   // body: Center(
       //   //   child: Text(
