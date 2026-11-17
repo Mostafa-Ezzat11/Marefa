@@ -252,7 +252,7 @@ class _AddCourseBasicInfoviewstate
         _buildLabel('Category'),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
-          value: selectedCategory,
+          initialValue: selectedCategory,
           isExpanded: true,
           icon: const Icon(Icons.keyboard_arrow_down),
           decoration: _inputDecoration(hint: 'Select'),
@@ -279,7 +279,7 @@ class _AddCourseBasicInfoviewstate
         _buildLabel('Level'),
         const SizedBox(height: 8),
         DropdownButtonFormField<CourseLevel>(
-          value: selectedLevel,
+          initialValue: selectedLevel,
           isExpanded: true,
           icon: const Icon(Icons.keyboard_arrow_down),
           decoration: _inputDecoration(hint: 'Select'),

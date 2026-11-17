@@ -12,7 +12,20 @@
           "package_name": "com.example.marefa"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "802161278448-tnqv7qlgigmm0hujue8ubd2norfuvn92.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.marefa",
+            "certificate_hash": "77a22fc84bbad1131d93f88cd1d6408df8b82339"
+          }
+        },
+        {
+          "client_id": "802161278448-o6cgpc0aph75v62jvq7ov8joua719ubm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBLRzvdVu0alUlN1PcN91frinKETjYoWBw"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "802161278448-o6cgpc0aph75v62jvq7ov8joua719ubm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "802161278448-tfv37sh0dgrstn2nefm3i7mn2qaoj53f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.marefa"
+              }
+            }
+          ]
         }
       }
     }

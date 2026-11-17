@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:marefa/general%20pages/login.dart';
+import 'package:marefa/general%20pages/services/auth_service.dart';
+
 import 'package:marefa/student/views/edit_profile_view.dart';
 import 'package:marefa/student/views/payment_methods_view.dart';
 import 'package:marefa/student/views/privacy_policy_view.dart';
 import 'package:marefa/student/views/security_view.dart';
 
 // ================= COLORS =================
+
 const kGreen = Color(0xFF0D5C3A);
 const kGreenSoft = Color(0xFFD6EBDF);
 const kGreenIcon = Color(0xFF2A7A55);
@@ -17,16 +23,62 @@ class MyProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _ProfileContent();
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return const Scaffold(
+        body: Center(child: Text('No user is currently logged in.')),
+      );
+    }
+
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .snapshots(),
+
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(color: kGreenIcon),
+            ),
+          );
+        }
+
+        if (snapshot.hasError) {
+          return const Scaffold(
+            body: Center(child: Text('Something went wrong.')),
+          );
+        }
+
+        if (!snapshot.hasData || !snapshot.data!.exists) {
+          return const Scaffold(
+            body: Center(child: Text('User profile not found.')),
+          );
+        }
+
+        final userData = snapshot.data!.data()!;
+
+        return _ProfileContent(userData: userData);
+      },
+    );
   }
 }
 
 // ================= PROFILE CONTENT =================
+
 class _ProfileContent extends StatelessWidget {
-  const _ProfileContent();
+  final Map<String, dynamic> userData;
+
+  const _ProfileContent({required this.userData});
 
   @override
   Widget build(BuildContext context) {
+    final name = userData['fullName'] ?? 'User';
+    final email = userData['email'] ?? '';
+    final photoUrl = userData['photoUrl'] ?? '';
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -49,20 +101,30 @@ class _ProfileContent extends StatelessWidget {
                       CircleAvatar(
                         radius: 40,
                         backgroundColor: kGreenIcon,
-                        child: Text(
-                          "T",
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 34,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        backgroundImage: photoUrl.isNotEmpty
+                            ? NetworkImage(photoUrl)
+                            : null,
+                        child: photoUrl.isEmpty
+                            ? Text(
+                                name.isNotEmpty
+                                    ? name[0].toUpperCase()
+                                    : 'U',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 34,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              )
+                            : null,
                       ),
+
                       Positioned(
                         right: -2,
                         bottom: 0,
                         child: GestureDetector(
-                          onTap: () {}, // TODO: اختيار صورة
+                          onTap: () {
+                            // هنضيف اختيار الصورة لاحقاً
+                          },
                           child: Container(
                             width: 28,
                             height: 28,
@@ -89,10 +151,11 @@ class _ProfileContent extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // ================= NAME =================
-                const Center(
+                Center(
                   child: Text(
-                    'Tasbeeh Ahmed',
-                    style: TextStyle(
+                    name,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
                       color: kOrange,
                       fontWeight: FontWeight.bold,
                       fontSize: 24,
@@ -103,10 +166,10 @@ class _ProfileContent extends StatelessWidget {
                 const SizedBox(height: 3),
 
                 // ================= EMAIL =================
-                const Center(
+                Center(
                   child: Text(
-                    'tasbeeh.ahmed@gmail.com',
-                    style: TextStyle(
+                    email,
+                    style: const TextStyle(
                       color: Color.fromARGB(255, 66, 108, 70),
                       fontSize: 14,
                     ),
@@ -125,6 +188,7 @@ class _ProfileContent extends StatelessWidget {
                     ),
                   ),
                 ),
+
                 _ProfileTile(
                   icon: Icons.lock_outline,
                   title: 'Security Settings',
@@ -134,6 +198,7 @@ class _ProfileContent extends StatelessWidget {
                     ),
                   ),
                 ),
+
                 _ProfileTile(
                   icon: Icons.credit_card,
                   title: 'Payment Methods',
@@ -143,6 +208,7 @@ class _ProfileContent extends StatelessWidget {
                     ),
                   ),
                 ),
+
                 _ProfileTile(
                   icon: Icons.description_outlined,
                   title: 'Privacy Policy',
@@ -171,6 +237,7 @@ class _ProfileContent extends StatelessWidget {
   }
 
   // ================= LOGOUT DIALOG =================
+
   void showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -190,19 +257,32 @@ class _ProfileContent extends StatelessWidget {
             onPressed: () => Navigator.pop(dialogContext),
             child: const Text('Cancel'),
           ),
+
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: kOrange,
               foregroundColor: Colors.white,
             ),
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(dialogContext);
-              // امسحي التوكن هنا، مثلاً: await storage.delete(key: 'token');
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (_) => const Login()),
-                (route) => false,
-              );
+
+              try {
+                await AuthService.instance.logout();
+
+                if (!context.mounted) return;
+
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => const Login()),
+                  (route) => false,
+                );
+              } catch (e) {
+                if (!context.mounted) return;
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Logout failed: $e')),
+                );
+              }
             },
             child: const Text('Log out'),
           ),
@@ -213,6 +293,7 @@ class _ProfileContent extends StatelessWidget {
 }
 
 // ================= REUSABLE TILE =================
+
 class _ProfileTile extends StatelessWidget {
   final IconData icon;
   final String title;

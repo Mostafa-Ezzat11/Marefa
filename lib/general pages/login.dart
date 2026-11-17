@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:marefa/general%20pages/services/auth_service.dart';
 import 'package:marefa/student/views/student_main_view.dart';
+import 'package:marefa/teacher/views/teacher_main_view.dart';
+
 import 'signup.dart';
 import 'forget_password.dart';
 
@@ -17,9 +22,14 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
+
   final _user = TextEditingController();
   final _password = TextEditingController();
+
+  final AuthService _authService = AuthService.instance;
+
   bool _hidePass = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -28,13 +38,138 @@ class _LoginState extends State<Login> {
     super.dispose();
   }
 
-  void _login() {
+  // ================= SHOW MESSAGE =================
+
+  void _showMessage(String message) {
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  // ================= NAVIGATE BY ROLE =================
+
+  Future<void> _navigateByRole(String uid) async {
+    try {
+      final role = await _authService.getUserRole(uid);
+
+      if (!mounted) return;
+
+      if (role == 'student') {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => StudentMainView()),
+          (route) => false,
+        );
+      } else if (role == 'teacher') {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => TeacherMainView()),
+          (route) => false,
+        );
+      } else {
+        await _authService.logout();
+
+        _showMessage('Account profile not found or invalid role.');
+      }
+    } catch (e) {
+      await _authService.logout();
+
+      _showMessage('Could not load account information.');
+    }
+  }
+
+  // ================= EMAIL LOGIN =================
+
+  Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => StudentMainView()),
-    );
+    setState(() => _isLoading = true);
+
+    try {
+      final credential = await _authService.loginWithEmail(
+        email: _user.text.trim(),
+        password: _password.text,
+      );
+
+      final user = credential.user;
+
+      if (user == null) {
+        throw Exception('User not found.');
+      }
+
+      await user.reload();
+
+      final refreshedUser = FirebaseAuth.instance.currentUser;
+
+      if (refreshedUser == null) {
+        throw Exception('Could not retrieve user.');
+      }
+
+      if (!refreshedUser.emailVerified) {
+        await _authService.logout();
+
+        _showMessage('Please verify your email before logging in.');
+
+        return;
+      }
+
+      await _navigateByRole(refreshedUser.uid);
+    } on FirebaseAuthException catch (e) {
+      String message;
+
+      switch (e.code) {
+        case 'invalid-email':
+          message = 'Invalid email address.';
+          break;
+        case 'user-disabled':
+          message = 'This account has been disabled.';
+          break;
+        case 'invalid-credential':
+          message = 'Incorrect email or password.';
+          break;
+        case 'network-request-failed':
+          message = 'Please check your internet connection.';
+          break;
+        default:
+          message = e.message ?? 'Login failed.';
+      }
+
+      _showMessage(message);
+    } catch (e) {
+      _showMessage('Something went wrong. Please try again.');
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  // ================= GOOGLE LOGIN =================
+
+  Future<void> _googleLogin() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final credential = await _authService.signInWithGoogle();
+
+      final user = credential.user;
+
+      if (user == null) {
+        throw Exception('Google account not found.');
+      }
+
+      await _navigateByRole(user.uid);
+    } on FirebaseAuthException catch (e) {
+      _showMessage(e.message ?? 'Google login failed.');
+    } catch (e) {
+      _showMessage('Google sign-in failed: $e');
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   @override
@@ -59,7 +194,9 @@ class _LoginState extends State<Login> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+
                 const SizedBox(height: 4),
+
                 Text(
                   'Log in to your account',
                   style: TextStyle(
@@ -67,18 +204,31 @@ class _LoginState extends State<Login> {
                     fontSize: 14,
                   ),
                 ),
+
                 const SizedBox(height: 22),
 
-                // ================= FIELDS =================
+                // EMAIL
                 _Field(
-                  label: 'Email or phone',
+                  label: 'Email',
                   hint: 'you@example.com',
                   controller: _user,
                   keyboard: TextInputType.emailAddress,
-                  validator: (v) => v == null || v.trim().isEmpty
-                      ? 'Enter your email or phone'
-                      : null,
+                  validator: (v) {
+                    if (v == null || v.trim().isEmpty) {
+                      return 'Enter your email';
+                    }
+
+                    if (!RegExp(
+                      r'^[^@]+@[^@]+\.[^@]+$',
+                    ).hasMatch(v.trim())) {
+                      return 'Enter a valid email';
+                    }
+
+                    return null;
+                  },
                 ),
+
+                // PASSWORD
                 _Field(
                   label: 'Password',
                   hint: '••••••••',
@@ -92,24 +242,33 @@ class _LoginState extends State<Login> {
                       size: 18,
                       color: Colors.grey,
                     ),
-                    onPressed: () =>
-                        setState(() => _hidePass = !_hidePass),
+                    onPressed: () {
+                      setState(() {
+                        _hidePass = !_hidePass;
+                      });
+                    },
                   ),
-                  validator: (v) => v == null || v.isEmpty
-                      ? 'Enter your password'
-                      : null,
+                  validator: (v) {
+                    if (v == null || v.isEmpty) {
+                      return 'Enter your password';
+                    }
+
+                    return null;
+                  },
                 ),
 
-                // ================= FORGOT =================
+                // FORGOT PASSWORD
                 Align(
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const ForgetPassword(),
-                      ),
-                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ForgetPassword(),
+                        ),
+                      );
+                    },
                     child: const Text(
                       'Forgot password?',
                       style: TextStyle(color: _green, fontSize: 13),
@@ -119,12 +278,12 @@ class _LoginState extends State<Login> {
 
                 const SizedBox(height: 16),
 
-                // ================= LOG IN =================
+                // LOGIN BUTTON
                 SizedBox(
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: _login,
+                    onPressed: _isLoading ? null : _login,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _green,
                       foregroundColor: Colors.white,
@@ -133,17 +292,22 @@ class _LoginState extends State<Login> {
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    child: const Text(
-                      'Log In',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    child: _isLoading
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : const Text(
+                            'Log In',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
 
                 const SizedBox(height: 14),
+
                 Center(
                   child: Text(
                     'or',
@@ -153,26 +317,29 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 14),
 
-                // ================= SOCIAL =================
+                // GOOGLE LOGIN
                 _SocialButton(
                   label: 'Continue with Google',
                   icon: 'assets/images/icon-google.png',
-                  onTap: () {}, // TODO: Google sign-in
+                  onTap: _isLoading ? () {} : _googleLogin,
                 ),
 
                 const SizedBox(height: 24),
 
-                // ================= SIGN UP LINK =================
+                // SIGN UP
                 Center(
                   child: GestureDetector(
-                    onTap: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const SignUp(),
-                      ),
-                    ),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const SignUp(),
+                        ),
+                      );
+                    },
                     child: Text.rich(
                       TextSpan(
                         text: 'New here? ',
@@ -203,6 +370,7 @@ class _LoginState extends State<Login> {
 }
 
 // ================= SOCIAL BUTTON =================
+
 class _SocialButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
@@ -230,7 +398,6 @@ class _SocialButton extends StatelessWidget {
           ),
         ),
         child: Row(
-          spacing: 10,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
@@ -240,6 +407,7 @@ class _SocialButton extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            const SizedBox(width: 10),
             Image.asset(icon, width: 26, height: 26),
           ],
         ),
@@ -249,6 +417,7 @@ class _SocialButton extends StatelessWidget {
 }
 
 // ================= REUSABLE FIELD =================
+
 class _Field extends StatelessWidget {
   final String label;
   final String hint;
@@ -268,10 +437,12 @@ class _Field extends StatelessWidget {
     this.validator,
   });
 
-  OutlineInputBorder _b(Color c) => OutlineInputBorder(
-    borderRadius: BorderRadius.circular(12),
-    borderSide: BorderSide(color: c),
-  );
+  OutlineInputBorder _b(Color c) {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: c),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -287,7 +458,9 @@ class _Field extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
+
           const SizedBox(height: 6),
+
           TextFormField(
             controller: controller,
             keyboardType: keyboard,

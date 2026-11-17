@@ -6,14 +6,14 @@ import 'earnings_page.dart';
 import 'teacher_home_page.dart';
 
 /// Holds the bottom navigation and switches between the teacher tabs.
-class TeacherMainPage extends StatefulWidget {
-  const TeacherMainPage({super.key});
+class TeacherMainView extends StatefulWidget {
+  const TeacherMainView({super.key});
 
   @override
-  State<TeacherMainPage> createState() => _TeacherMainPageState();
+  State<TeacherMainView> createState() => _TeacherMainViewState();
 }
 
-class _TeacherMainPageState extends State<TeacherMainPage> {
+class _TeacherMainViewState extends State<TeacherMainView> {
   int _currentIndex = 0;
 
   static const _pages = [
