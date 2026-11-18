@@ -1,7 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'package:marefa/general%20pages/login.dart';
 import 'package:marefa/general%20pages/otp_verification.dart';
+import 'package:marefa/general%20pages/services/auth_service.dart';
+
+import 'package:marefa/student/views/student_main_view.dart';
+import 'package:marefa/teacher/views/teacher_main_view.dart';
 
 const _green = Color(0xFF2A7A55);
 const _fill = Color(0xFFF5EFE6);
@@ -16,10 +22,14 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
+
   final _name = TextEditingController();
   final _email = TextEditingController();
   final _password = TextEditingController();
+
   bool _hidePass = true;
+  bool _isLoading = false;
+
   String _role = 'Student';
 
   @override
@@ -30,15 +40,119 @@ class _SignUpState extends State<SignUp> {
     super.dispose();
   }
 
-  void _submit() {
+  // ================= SHOW MESSAGE =================
+
+  void _showMessage(String message) {
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  // ================= NAVIGATE BY ROLE =================
+
+  Future<void> _navigateByRole(String uid) async {
+    final role = await AuthService.instance.getUserRole(uid);
+
+    if (!mounted) return;
+
+    if (role == 'student') {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => StudentMainView()),
+        (route) => false,
+      );
+    } else if (role == 'teacher') {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => TeacherMainView()),
+        (route) => false,
+      );
+    } else {
+      await AuthService.instance.logout();
+
+      _showMessage('Invalid account type.');
+    }
+  }
+
+  // ================= EMAIL SIGN UP =================
+
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => OtpVerification(contact: _email.text.trim()),
-      ),
-    );
+    setState(() => _isLoading = true);
+
+    try {
+      final credential = await AuthService.instance.signUpWithEmail(
+        name: _name.text,
+        email: _email.text,
+        password: _password.text,
+        role: _role == 'Student' ? 'student' : 'teacher',
+      );
+
+      if (!mounted) return;
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) =>
+              OtpVerification(contact: _email.text.trim()),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      String message;
+
+      switch (e.code) {
+        case 'email-already-in-use':
+          message = 'This email is already registered.';
+          break;
+        case 'weak-password':
+          message = 'Password is too weak.';
+          break;
+        case 'invalid-email':
+          message = 'Invalid email address.';
+          break;
+        default:
+          message = e.message ?? 'Registration failed.';
+      }
+
+      _showMessage(message);
+    } catch (e) {
+      _showMessage('Something went wrong: $e');
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  // ================= GOOGLE SIGN UP =================
+
+  Future<void> _googleSignUp() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final credential = await AuthService.instance.signInWithGoogle(
+        role: _role == 'Student' ? 'student' : 'teacher',
+      );
+
+      final user = credential.user;
+
+      if (user == null) {
+        throw Exception('Google account not found.');
+      }
+
+      await _navigateByRole(user.uid);
+    } on FirebaseAuthException catch (e) {
+      _showMessage(e.message ?? 'Google registration failed.');
+    } catch (e) {
+      _showMessage('Google registration failed: $e');
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   @override
@@ -63,7 +177,9 @@ class _SignUpState extends State<SignUp> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+
                 const SizedBox(height: 4),
+
                 Text(
                   'Join Marefa and start learning',
                   style: TextStyle(
@@ -71,9 +187,9 @@ class _SignUpState extends State<SignUp> {
                     fontSize: 14,
                   ),
                 ),
+
                 const SizedBox(height: 22),
 
-                // ================= FIELDS =================
                 _Field(
                   label: 'Full name',
                   hint: 'Ahmed Mohamed',
@@ -82,15 +198,21 @@ class _SignUpState extends State<SignUp> {
                       ? 'Enter your name'
                       : null,
                 ),
+
                 _Field(
                   label: 'Email',
                   hint: 'you@example.com',
                   controller: _email,
                   keyboard: TextInputType.emailAddress,
-                  validator: (v) => v != null && v.contains('@')
+                  validator: (v) =>
+                      v != null &&
+                          RegExp(
+                            r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
+                          ).hasMatch(v.trim())
                       ? null
                       : 'Enter a valid email',
                 ),
+
                 _Field(
                   label: 'Password',
                   hint: '••••••••',
@@ -104,15 +226,17 @@ class _SignUpState extends State<SignUp> {
                       size: 18,
                       color: Colors.grey,
                     ),
-                    onPressed: () =>
-                        setState(() => _hidePass = !_hidePass),
+                    onPressed: () {
+                      setState(() {
+                        _hidePass = !_hidePass;
+                      });
+                    },
                   ),
                   validator: (v) => v != null && v.length >= 6
                       ? null
                       : 'At least 6 characters',
                 ),
 
-                // ================= ROLE =================
                 const Text(
                   'Select role',
                   style: TextStyle(
@@ -120,24 +244,30 @@ class _SignUpState extends State<SignUp> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
+
                 const SizedBox(height: 8),
+
                 Row(
                   children: [
                     Expanded(
                       child: _RoleButton(
                         label: 'Student',
                         selected: _role == 'Student',
-                        onTap: () =>
-                            setState(() => _role = 'Student'),
+                        onTap: () {
+                          setState(() => _role = 'Student');
+                        },
                       ),
                     ),
+
                     const SizedBox(width: 12),
+
                     Expanded(
                       child: _RoleButton(
                         label: 'Instructor',
                         selected: _role == 'Instructor',
-                        onTap: () =>
-                            setState(() => _role = 'Instructor'),
+                        onTap: () {
+                          setState(() => _role = 'Instructor');
+                        },
                       ),
                     ),
                   ],
@@ -145,16 +275,12 @@ class _SignUpState extends State<SignUp> {
 
                 const SizedBox(height: 24),
 
-                // ================= SIGN UP =================
+                // EMAIL SIGN UP
                 SizedBox(
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: _submit,
-                    // => Navigator.pushReplacement(
-                    //   context,
-                    //   MaterialPageRoute(builder: (_) => const EditProfile()),
-                    // ),//
+                    onPressed: _isLoading ? null : _submit,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _green,
                       foregroundColor: Colors.white,
@@ -163,27 +289,81 @@ class _SignUpState extends State<SignUp> {
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    child: const Text(
-                      'Sign Up',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    child: _isLoading
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : const Text(
+                            'Sign Up',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                Center(
+                  child: Text(
+                    'OR',
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontSize: 13,
                     ),
                   ),
                 ),
 
                 const SizedBox(height: 16),
 
-                // ================= LOGIN LINK =================
-                Center(
-                  child: GestureDetector(
-                    onTap: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const Login(),
+                // GOOGLE SIGN UP
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: OutlinedButton(
+                    onPressed: _isLoading ? null : _googleSignUp,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.black87,
+                      side: const BorderSide(color: _border),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
                       ),
                     ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Continue with Google',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+
+                        Image.asset(
+                          'assets/images/icon-google.png',
+                          height: 22,
+                          width: 22,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const Login(),
+                        ),
+                      );
+                    },
                     child: Text.rich(
                       TextSpan(
                         text: 'Already have an account? ',
@@ -214,6 +394,7 @@ class _SignUpState extends State<SignUp> {
 }
 
 // ================= ROLE BUTTON =================
+
 class _RoleButton extends StatelessWidget {
   final String label;
   final bool selected;
@@ -254,6 +435,7 @@ class _RoleButton extends StatelessWidget {
 }
 
 // ================= REUSABLE FIELD =================
+
 class _Field extends StatelessWidget {
   final String label;
   final String hint;

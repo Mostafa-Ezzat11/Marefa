@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:marefa/general%20pages/login.dart';
+import 'package:marefa/student/views/change_password_view.dart';
 
 const _green = Color(0xff2e6b3e);
 const _beige = Color(0xffd9d2c3);
@@ -15,49 +19,212 @@ class SecurityView extends StatefulWidget {
 }
 
 class _SecurityViewState extends State<SecurityView> {
-  // كل Switch له قيمته الخاصة
   bool twoFactor = true;
   bool biometric = true;
   bool loginAlerts = false;
 
-  void confirmDelete() {
-    showDialog<void>(
+  bool _isDeleting = false;
+
+  // ================= DELETE ACCOUNT CONFIRMATION =================
+
+  Future<void> confirmDelete() async {
+    final passwordController = TextEditingController();
+
+    final confirmed = await showDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        backgroundColor: const Color(0xFFFFFDF8),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
-        ),
-        title: const Text(
-          'Delete Account',
-          textAlign: TextAlign.center,
-        ),
-        content: const Text(
-          'Are you sure you want to delete your account?',
-          textAlign: TextAlign.center,
-        ),
-        actionsAlignment: MainAxisAlignment.center,
-        actions: [
-          OutlinedButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _red,
-              foregroundColor: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.of(dialogContext).push(
-                MaterialPageRoute(builder: (_) => const Login()),
-              );
-            },
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
+      builder: (dialogContext) {
+        bool hidePassword = true;
+
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              backgroundColor: const Color(0xFFFFFDF8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+              title: const Text(
+                'Delete Account',
+                textAlign: TextAlign.center,
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'This action cannot be undone. '
+                    'Enter your password to confirm account deletion.',
+                    textAlign: TextAlign.center,
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  TextField(
+                    controller: passwordController,
+                    obscureText: hidePassword,
+                    decoration: InputDecoration(
+                      hintText: 'Enter your password',
+                      filled: true,
+                      fillColor: const Color(0xFFF5EFE6),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setDialogState(() {
+                            hidePassword = !hidePassword;
+                          });
+                        },
+                        icon: Icon(
+                          hidePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              actionsAlignment: MainAxisAlignment.center,
+              actions: [
+                OutlinedButton(
+                  onPressed: () {
+                    Navigator.pop(dialogContext, false);
+                  },
+                  child: const Text('Cancel'),
+                ),
+
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _red,
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: () {
+                    if (passwordController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Please enter your password.',
+                          ),
+                        ),
+                      );
+                      return;
+                    }
+
+                    Navigator.pop(dialogContext, true);
+                  },
+                  child: const Text('Delete'),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
+
+    if (confirmed != true) {
+      passwordController.dispose();
+      return;
+    }
+
+    await _deleteAccount(passwordController.text);
+
+    passwordController.dispose();
   }
+
+  // ================= DELETE ACCOUNT =================
+
+  Future<void> _deleteAccount(String password) async {
+    setState(() => _isDeleting = true);
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user == null) {
+        throw Exception('No user is currently logged in.');
+      }
+
+      final email = user.email;
+
+      if (email == null) {
+        throw Exception('User email not found.');
+      }
+
+      // 1. Re-authenticate user with password
+
+      final credential = EmailAuthProvider.credential(
+        email: email,
+        password: password,
+      );
+
+      await user.reauthenticateWithCredential(credential);
+
+      // 2. Delete user document from Firestore
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .delete();
+
+      // 3. Delete account from Firebase Authentication
+
+      await user.delete();
+
+      if (!mounted) return;
+
+      // 4. Navigate to Login
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const Login()),
+        (route) => false,
+      );
+    } on FirebaseAuthException catch (e) {
+      String message;
+
+      switch (e.code) {
+        case 'wrong-password':
+        case 'invalid-credential':
+          message = 'Incorrect password. Please try again.';
+          break;
+
+        case 'requires-recent-login':
+          message =
+              'Please log in again before deleting your account.';
+          break;
+
+        case 'user-mismatch':
+          message = 'Account verification failed.';
+          break;
+
+        case 'network-request-failed':
+          message = 'Please check your internet connection.';
+          break;
+
+        default:
+          message = e.message ?? 'Account deletion failed.';
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message), backgroundColor: _red),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error deleting account: $e'),
+            backgroundColor: _red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isDeleting = false);
+      }
+    }
+  }
+
+  // ================= SWITCH =================
 
   Widget _switch(bool value, ValueChanged<bool> onChanged) {
     return Switch(
@@ -68,6 +235,8 @@ class _SecurityViewState extends State<SecurityView> {
       inactiveTrackColor: _beige,
     );
   }
+
+  // ================= BUILD =================
 
   @override
   Widget build(BuildContext context) {
@@ -97,14 +266,23 @@ class _SecurityViewState extends State<SecurityView> {
                 fontSize: 15,
               ),
             ),
+
             const SizedBox(height: 8),
 
             // ================= SETTINGS =================
             _SettingRow(
               title: 'Change password',
               trailing: const Icon(Icons.chevron_right),
-              onTap: () {}, // TODO: صفحة تغيير الباسورد
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const ChangePasswordView(),
+                  ),
+                );
+              },
             ),
+
             _SettingRow(
               title: 'Two-factor authentication',
               trailing: _switch(
@@ -112,6 +290,7 @@ class _SecurityViewState extends State<SecurityView> {
                 (v) => setState(() => twoFactor = v),
               ),
             ),
+
             _SettingRow(
               title: 'Face / fingerprint login',
               trailing: _switch(
@@ -119,6 +298,7 @@ class _SecurityViewState extends State<SecurityView> {
                 (v) => setState(() => biometric = v),
               ),
             ),
+
             _SettingRow(
               title: 'Login alerts',
               trailing: _switch(
@@ -126,6 +306,7 @@ class _SecurityViewState extends State<SecurityView> {
                 (v) => setState(() => loginAlerts = v),
               ),
             ),
+
             _SettingRow(
               title: 'Active devices',
               trailing: Row(
@@ -135,17 +316,17 @@ class _SecurityViewState extends State<SecurityView> {
                   Icon(Icons.chevron_right),
                 ],
               ),
-              onTap: () {}, // TODO: صفحة الأجهزة
+              onTap: () {},
             ),
 
             const Spacer(),
 
-            // ================= DELETE =================
+            // ================= DELETE BUTTON =================
             SizedBox(
               width: double.infinity,
               height: 52,
               child: ElevatedButton(
-                onPressed: confirmDelete,
+                onPressed: _isDeleting ? null : confirmDelete,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _red,
                   foregroundColor: Colors.white,
@@ -154,15 +335,25 @@ class _SecurityViewState extends State<SecurityView> {
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                child: const Text(
-                  'Delete Account',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                child: _isDeleting
+                    ? const SizedBox(
+                        height: 22,
+                        width: 22,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text(
+                        'Delete Account',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
               ),
             ),
+
             const SizedBox(height: 24),
           ],
         ),
@@ -172,6 +363,7 @@ class _SecurityViewState extends State<SecurityView> {
 }
 
 // ================= REUSABLE ROW =================
+
 class _SettingRow extends StatelessWidget {
   final String title;
   final Widget trailing;
