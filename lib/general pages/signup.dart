@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:marefa/general%20pages/login.dart';
-import 'package:marefa/general%20pages/otp_verification.dart';
+import 'package:marefa/general%20pages/email_verification.dart';
 import 'package:marefa/general%20pages/services/auth_service.dart';
 
 import 'package:marefa/student/views/student_main_view.dart';
@@ -97,7 +97,7 @@ class _SignUpState extends State<SignUp> {
         context,
         MaterialPageRoute(
           builder: (_) =>
-              OtpVerification(contact: _email.text.trim()),
+              EmailVerification(contact: _email.text.trim()),
         ),
       );
     } on FirebaseAuthException catch (e) {

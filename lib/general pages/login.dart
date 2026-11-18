@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:marefa/general%20pages/forgot_password_view.dart';
 import 'package:marefa/general%20pages/services/auth_service.dart';
 import 'package:marefa/student/views/student_main_view.dart';
 import 'package:marefa/teacher/views/teacher_main_view.dart';
-
 import 'signup.dart';
-import 'forget_password.dart';
 
 const _green = Color(0xFF2A7A55);
 const _fill = Color(0xFFF5EFE6);
@@ -265,7 +263,7 @@ class _LoginState extends State<Login> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const ForgetPassword(),
+                          builder: (_) => const ForgotPasswordView(),
                         ),
                       );
                     },

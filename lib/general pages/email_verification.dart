@@ -10,16 +10,16 @@ import 'package:marefa/general%20pages/login.dart';
 const _green = Color(0xFF2A7A55);
 const _fill = Color(0xFFF5EFE6);
 
-class OtpVerification extends StatefulWidget {
+class EmailVerification extends StatefulWidget {
   final String contact;
 
-  const OtpVerification({super.key, required this.contact});
+  const EmailVerification({super.key, required this.contact});
 
   @override
-  State<OtpVerification> createState() => _OtpVerificationState();
+  State<EmailVerification> createState() => _EmailVerificationState();
 }
 
-class _OtpVerificationState extends State<OtpVerification> {
+class _EmailVerificationState extends State<EmailVerification> {
   int _seconds = 45;
   Timer? _timer;
 
@@ -86,7 +86,6 @@ class _OtpVerificationState extends State<OtpVerification> {
             ),
           ),
         );
-
         return;
       }
 
