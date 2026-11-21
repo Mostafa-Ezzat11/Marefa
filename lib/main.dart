@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:marefa/constants.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:marefa/general%20pages/login_signup_selection.dart';
+import 'package:marefa/onboarding/onboarding1.dart';
 import 'package:marefa/onboarding/splash_view.dart';
 import 'firebase_options.dart';
 
@@ -24,9 +26,9 @@ class Marefa extends StatelessWidget {
 
       theme: ThemeData(
         fontFamily: 'OpenSans',
-        scaffoldBackgroundColor: AppColors.backgroundColor,
+        scaffoldBackgroundColor: Colors.white,
       ),
-      home: SplashView(), //Scaffold(
+      home: Onboarding1(), //Scaffold(
       //   body: PaymentSuccessfulView(),
       //   // body: Center(
       //   //   child: Text(

@@ -16,10 +16,6 @@ class _Onboarding2State extends State<Onboarding2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-
-      appBar: AppBar(backgroundColor: Colors.white, elevation: 0),
-
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -116,6 +112,8 @@ class _Onboarding2State extends State<Onboarding2> {
                 ),
               ),
             ),
+
+            SizedBox(height: 30),
           ],
         ),
       ),

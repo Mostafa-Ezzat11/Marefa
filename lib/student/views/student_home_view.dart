@@ -59,13 +59,21 @@ class _StudentHomeViewState extends State<StudentHomeView> {
       price: 49.99,
       lessons: [
         LessonModel(id: 1, title: 'HTML Basics', duration: '10 min'),
-        LessonModel(id: 2, title: 'CSS Fundamentals', duration: '15 min'),
+        LessonModel(
+          id: 2,
+          title: 'CSS Fundamentals',
+          duration: '15 min',
+        ),
         LessonModel(
           id: 3,
           title: 'JavaScript Introduction',
           duration: '20 min',
         ),
-        LessonModel(id: 4, title: 'Responsive Web Design', duration: '18 min'),
+        LessonModel(
+          id: 4,
+          title: 'Responsive Web Design',
+          duration: '18 min',
+        ),
       ],
       files: [
         CourseFileModel(
@@ -127,9 +135,21 @@ class _StudentHomeViewState extends State<StudentHomeView> {
       title: 'Flutter UI/UX Design',
       price: 39.99,
       lessons: [
-        LessonModel(id: 1, title: 'UI Design Basics', duration: '8 min'),
-        LessonModel(id: 2, title: 'Flutter Layouts', duration: '12 min'),
-        LessonModel(id: 3, title: 'Styling Widgets', duration: '15 min'),
+        LessonModel(
+          id: 1,
+          title: 'UI Design Basics',
+          duration: '8 min',
+        ),
+        LessonModel(
+          id: 2,
+          title: 'Flutter Layouts',
+          duration: '12 min',
+        ),
+        LessonModel(
+          id: 3,
+          title: 'Styling Widgets',
+          duration: '15 min',
+        ),
       ],
       files: [
         CourseFileModel(
@@ -157,7 +177,6 @@ class _StudentHomeViewState extends State<StudentHomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         bottom: false,
         child: ListView(
@@ -166,7 +185,9 @@ class _StudentHomeViewState extends State<StudentHomeView> {
             HomeSearchBar(
               readOnly: true,
               onTap: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(builder: (_) => const SearchView()),
+                MaterialPageRoute<void>(
+                  builder: (_) => const SearchView(),
+                ),
               ),
             ),
             const SizedBox(height: 16),
