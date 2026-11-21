@@ -3,7 +3,7 @@ import 'package:marefa/constants.dart';
 import 'package:marefa/student/views/student_main_view.dart';
 
 void main() {
-  runApp(Marefa());
+  runApp(const Marefa());
 }
 
 class Marefa extends StatelessWidget {
@@ -18,15 +18,7 @@ class Marefa extends StatelessWidget {
         fontFamily: 'OpenSans',
         scaffoldBackgroundColor: AppColors.backgroundColor,
       ),
-      home: StudentMainView(), //Scaffold(
-      //   body: PaymentSuccessfulView(),
-      //   // body: Center(
-      //   //   child: Text(
-      //   //     'Welcome my team ✌️',
-      //   //     style: TextStyle(fontSize: 25),
-      //   //   ),
-      //   // ),
-      // ),
+      home: StudentMainView()
     );
   }
 }
