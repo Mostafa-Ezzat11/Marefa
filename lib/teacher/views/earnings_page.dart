@@ -65,19 +65,7 @@ class _EarningsPageState extends State<EarningsPage> {
         '27',
         '30',
       ],
-      chartValues: [
-        90,
-        210,
-        130,
-        110,
-        200,
-        170,
-        260,
-        230,
-        150,
-        240,
-        380,
-      ],
+      chartValues: [90, 210, 130, 110, 200, 170, 260, 230, 150, 240, 370],
     ),
   ];
 
@@ -86,8 +74,7 @@ class _EarningsPageState extends State<EarningsPage> {
   void _openPayoutMethods() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) =>
-            const PayoutMethodsPage(availableBalance: 360),
+        builder: (_) => const PayoutMethodsPage(availableBalance: 360),
       ),
     );
   }
@@ -141,8 +128,7 @@ class _EarningsPageState extends State<EarningsPage> {
               EarningsOverviewCard(
                 periods: _periods,
                 selected: _selectedPeriod,
-                onPeriodChanged: (p) =>
-                    setState(() => _selectedPeriod = p),
+                onPeriodChanged: (p) => setState(() => _selectedPeriod = p),
               ),
             ],
           ),
