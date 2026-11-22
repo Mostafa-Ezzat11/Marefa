@@ -3,10 +3,16 @@ import 'package:marefa/constants.dart';
 import 'package:marefa/student/models/course_category.dart';
 
 class CategoryItem extends StatelessWidget {
-  const CategoryItem({super.key, required this.category, this.onTap});
+  const CategoryItem({
+    super.key,
+    required this.category,
+    this.onTap,
+    this.isSelected = false,
+  });
 
   final CourseCategory category;
   final VoidCallback? onTap;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +28,12 @@ class CategoryItem extends StatelessWidget {
             decoration: BoxDecoration(
               color: category.backgroundColor,
               borderRadius: BorderRadius.circular(18),
+              border: isSelected
+                  ? Border.all(
+                      color: category.iconColor.withValues(alpha: 1),
+                      width: 3,
+                    )
+                  : null,
             ),
             child: Icon(category.icon, color: category.iconColor, size: 26),
           ),
@@ -30,9 +42,9 @@ class CategoryItem extends StatelessWidget {
             category.name,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11.5,
-              fontWeight: FontWeight.w500,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
               color: AppColors.largeTextColor,
             ),
           ),

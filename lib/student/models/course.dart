@@ -1,10 +1,13 @@
 import 'package:marefa/student/models/lesson_model.dart';
 import 'package:marefa/student/models/course_file_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Course {
   const Course({
+    this.id = '',
     required this.title,
     required this.price,
+    this.categoryId,
     this.completed = false,
     this.isFavorite = false,
     this.image,
@@ -23,8 +26,10 @@ class Course {
   });
 
   // Course information
+  final String id;
   final String title;
   final double price;
+  final String? categoryId;
 
   // Course progress and status
   final bool completed;
@@ -70,4 +75,26 @@ class Course {
 //       : thousands;
 //   return '${trimmed}k';
 // }
+  factory Course.fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> doc,
+      ) {
+    final data = doc.data()!;
+
+    return Course(
+      id: doc.id,
+      title: data['title'] ?? '',
+      price: (data['price'] as num?)?.toDouble() ?? 0.0,
+      categoryId: data['categoryId'],
+      image: data['imageUrl'],
+      description: data['description'],
+      instructorName: data['instructorName'],
+      instructorTitle: data['instructorTitle'],
+      instructorImage: data['instructorImage'],
+      rating: (data['rating'] as num?)?.toDouble(),
+      reviewCount: (data['reviewCount'] as num?)?.toInt(),
+      level: data['level'],
+      durationHours: (data['durationHours'] as num?)?.toInt(),
+      sectionCount: (data['sectionCount'] as num?)?.toInt(),
+    );
+  }
 }

@@ -135,4 +135,18 @@ class AuthService {
   Future<void> sendPasswordReset(String email) async {
     await _auth.sendPasswordResetEmail(email: email.trim());
   }
+
+  // ================= GET USER NAME =================
+
+  Future<String> getStudentName() async {
+    final user = _auth.currentUser;
+
+    if (user == null) return 'Student';
+
+    final doc = await _firestore.collection('users').doc(user.uid).get();
+
+    if (!doc.exists) return 'Student';
+
+    return doc.data()?['fullName'] as String? ?? 'Student';
+  }
 }

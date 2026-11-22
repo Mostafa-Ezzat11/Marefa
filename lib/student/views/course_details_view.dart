@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:marefa/constants.dart';
 import 'package:marefa/student/models/course.dart';
+import 'package:marefa/student/models/course_file_model.dart';
+import 'package:marefa/student/models/lesson_model.dart';
+import 'package:marefa/student/services/course_service.dart';
 import 'package:marefa/student/widgets/content_tab_switcher.dart';
 import 'package:marefa/student/widgets/course_materials_section.dart';
 import 'package:marefa/student/widgets/info_chip.dart';
@@ -18,6 +21,18 @@ class CourseDetailsView extends StatefulWidget {
 }
 
 class _CourseDetailsViewState extends State<CourseDetailsView> {
+  final CourseService _courseService = CourseService();
+
+  late Future<({List<LessonModel> lessons, List<CourseFileModel> files})>
+  _contentFuture;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _contentFuture = _courseService.fetchCourseContent(widget.course.id);
+  }
+
   /// 0 = Videos, 1 = Course Files.
   int _switcherTabIndex = 0;
 
@@ -32,9 +47,6 @@ class _CourseDetailsViewState extends State<CourseDetailsView> {
     final duration = course.durationLabel;
     final instructorName = course.instructorName;
     final description = course.description;
-
-    final lessons = course.lessons;
-    final files = course.files;
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
@@ -95,34 +107,9 @@ class _CourseDetailsViewState extends State<CourseDetailsView> {
 
                   const SizedBox(height: 20),
 
-// Switcher Header
-                  ContentTabSwitcher(
-                    selectedIndex: _switcherTabIndex,
-                    onChanged: (index) => setState(() => _switcherTabIndex = index),
-                    videoCount: lessons.length,
-                    fileCount: files.length,
-                  ),
+                  // Switcher Header
+                  _buildCourseContent(),
 
-                  const SizedBox(height: 16),
-
-                  if (_switcherTabIndex == 0)
-                    for (var i = 0; i < lessons.length; i++)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _selectedLessonIndex = i;
-                            });
-                          },
-                          child: LessonCard(
-                            lesson: lessons[i],
-                            isSelected: _selectedLessonIndex == i,
-                          ),
-                        ),
-                      )
-                  else
-                    CourseMaterialsSection(files: files),
                 ],
               ),
             ),
@@ -154,6 +141,88 @@ class _CourseDetailsViewState extends State<CourseDetailsView> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildCourseContent() {
+    return FutureBuilder<
+      ({List<LessonModel> lessons, List<CourseFileModel> files})
+    >(
+      future: _contentFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(24),
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        if (snapshot.hasError) {
+          return Center(
+            child: Column(
+              children: [
+                const Text('Failed to load course content',style: TextStyle(fontSize: 20),),
+                SizedBox(height: 10,),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _contentFuture = _courseService.fetchCourseContent(
+                        widget.course.id,
+                      );
+                    });
+                  },
+                  child: const Text('Try Again',style: TextStyle(fontSize: 16),),
+                ),
+              ],
+            ),
+          );
+        }
+
+        final lessons = snapshot.data!.lessons;
+        final files = snapshot.data!.files;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ContentTabSwitcher(
+              selectedIndex: _switcherTabIndex,
+              onChanged: (index) {
+                setState(() => _switcherTabIndex = index);
+              },
+              videoCount: lessons.length,
+              fileCount: files.length,
+            ),
+
+            const SizedBox(height: 16),
+
+            if (_switcherTabIndex == 0)
+              if (lessons.isEmpty)
+                const Center(child: Text('No lessons available yet.'))
+              else
+                for (var i = 0; i < lessons.length; i++)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedLessonIndex = i;
+                        });
+                      },
+                      child: LessonCard(
+                        lesson: lessons[i],
+                        isSelected: _selectedLessonIndex == i,
+                      ),
+                    ),
+                  )
+            else if (files.isEmpty)
+              const Center(child: Text('No files available yet.'))
+            else
+              CourseMaterialsSection(files: files),
+          ],
+        );
+      },
     );
   }
 }
@@ -217,3 +286,5 @@ class _Header extends StatelessWidget {
     );
   }
 }
+
+//==========    OK    ============

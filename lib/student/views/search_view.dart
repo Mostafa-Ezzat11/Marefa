@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marefa/constants.dart';
 import 'package:marefa/student/models/course.dart';
+import 'package:marefa/student/services/course_service.dart';
 import 'package:marefa/student/widgets/course_card.dart';
 import 'package:marefa/student/widgets/filter_chip_bar.dart';
 import 'package:marefa/student/widgets/home_search_bar.dart';
@@ -18,22 +19,23 @@ class SearchView extends StatefulWidget {
 class _SearchViewState extends State<SearchView> {
   static const List<String> _filters = ['All', 'Free', 'Paid', 'Favorite'];
 
-  static const List<Course> _courses = [
-    Course(title: 'Flutter Development Complete Guide', price: 49.99),
-    Course(title: 'Flutter UI/UX Design', price: 39.99),
-    Course(title: 'Flutter State Management', price: 29.99),
-    Course(title: 'Flutter API Integration', price: 0),
-  ];
+  final CourseService _courseService = CourseService();
 
   late final TextEditingController _controller;
+
+  late Future<List<Course>> _coursesFuture;
+
   late String _query;
   int _filterIndex = 0;
 
   @override
   void initState() {
     super.initState();
+
     _query = widget.initialQuery;
     _controller = TextEditingController(text: widget.initialQuery);
+
+    _coursesFuture = _courseService.fetchCourses();
   }
 
   @override
@@ -42,25 +44,85 @@ class _SearchViewState extends State<SearchView> {
     super.dispose();
   }
 
-  List<Course> get _results {
+  // ================= SEARCH & FILTER =================
+
+  List<Course> _getResults(List<Course> allCourses) {
     final query = _query.trim().toLowerCase();
 
-    final matches = _courses
-        .where((course) => course.title.toLowerCase().contains(query))
-        .toList();
+    final matches = allCourses.where((course) {
+      return course.title.toLowerCase().contains(query);
+    }).toList();
 
     return switch (_filterIndex) {
       1 => matches.where((course) => course.price == 0).toList(),
       2 => matches.where((course) => course.price > 0).toList(),
-      3 => matches.where((course) => course.isFavorite == true).toList(),
+      3 => matches.where((course) => course.isFavorite).toList(),
       _ => matches,
     };
   }
 
+  // ================= COURSES SECTION =================
+
+  Widget _buildCoursesSection() {
+    return FutureBuilder<List<Course>>(
+      future: _coursesFuture,
+      builder: (context, snapshot) {
+        // Loading
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        // Error
+        if (snapshot.hasError) {
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Something went wrong!'),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _coursesFuture = _courseService.fetchCourses();
+                    });
+                  },
+                  child: const Text('Try Again'),
+                ),
+              ],
+            ),
+          );
+        }
+
+        final allCourses = snapshot.data ?? [];
+
+        final results = _getResults(allCourses);
+
+        // Empty
+        if (results.isEmpty) {
+          return const Center(
+            child: Text(
+              'No courses found',
+              style: TextStyle(color: AppColors.primaryDarkColor),
+            ),
+          );
+        }
+
+        // Success
+        return ListView.separated(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+          itemCount: results.length,
+          separatorBuilder: (_, _) => const SizedBox(height: 12),
+          itemBuilder: (_, index) {
+            return CourseCard(course: results[index]);
+          },
+        );
+      },
+    );
+  }
+
+  // ================= BUILD =================
+
   @override
   Widget build(BuildContext context) {
-    final results = _results;
-
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
@@ -71,34 +133,34 @@ class _SearchViewState extends State<SearchView> {
               child: HomeSearchBar(
                 controller: _controller,
                 showFilterIcon: true,
-                onChanged: (value) => setState(() => _query = value),
+                onChanged: (value) {
+                  setState(() {
+                    _query = value;
+                  });
+                },
               ),
             ),
+
             FilterChipBar(
               labels: _filters,
               selectedIndex: _filterIndex,
-              onSelected: (index) => setState(() => _filterIndex = index),
+              onSelected: (index) {
+                setState(() {
+                  _filterIndex = index;
+                });
+              },
             ),
+
             const SizedBox(height: 16),
-            Expanded(
-              child: results.isEmpty
-                  ? const Center(
-                      child: Text(
-                        'No courses found',
-                        style: TextStyle(color: AppColors.primaryDarkColor),
-                      ),
-                    )
-                  : ListView.separated(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-                      itemCount: results.length,
-                      separatorBuilder: (_, _) => const SizedBox(height: 12),
-                      itemBuilder: (_, index) =>
-                          CourseCard(course: results[index]),
-                    ),
-            ),
+
+            Expanded(child: _buildCoursesSection()),
           ],
         ),
       ),
     );
   }
 }
+
+
+//Important:
+//1- add favorite to the course by student hive
