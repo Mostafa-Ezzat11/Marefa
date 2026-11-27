@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class AuthService {
   AuthService._();
@@ -9,6 +10,7 @@ class AuthService {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final Box _settings = Hive.box('settings');
 
   Future<void>? _googleInitialization;
 
@@ -128,6 +130,8 @@ class AuthService {
 
   Future<void> logout() async {
     await _auth.signOut();
+
+    await _settings.put('remember_me', false);
   }
 
   User? get currentUser => _auth.currentUser;
@@ -143,10 +147,36 @@ class AuthService {
 
     if (user == null) return 'Student';
 
-    final doc = await _firestore.collection('users').doc(user.uid).get();
+    final doc = await _firestore
+        .collection('users')
+        .doc(user.uid)
+        .get();
 
     if (!doc.exists) return 'Student';
 
     return doc.data()?['fullName'] as String? ?? 'Student';
+  }
+
+  // ================= REMEMBER ME =================
+
+  Future<void> setRememberMe(bool value) async {
+    await _settings.put('remember_me', value);
+  }
+
+  bool getRememberMe() {
+    return _settings.get('remember_me', defaultValue: false);
+  }
+
+  // ================= RESTORE SESSION =================
+
+  Future<User?> restoreSession() async {
+    final rememberMe = getRememberMe();
+
+    if (!rememberMe) {
+      await _auth.signOut();
+      return null;
+    }
+
+    return _auth.currentUser;
   }
 }

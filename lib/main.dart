@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:marefa/onboarding/onboarding1.dart';
-import 'package:marefa/student/views/student_home_view.dart';
-import 'package:marefa/student/views/student_main_view.dart';
-import 'package:marefa/teacher/views/teacher_home_page.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+import 'package:marefa/onboarding/splash_view.dart';
 import 'firebase_options.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+
+  await Hive.openBox('settings');
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -23,12 +25,11 @@ class Marefa extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
       theme: ThemeData(
         fontFamily: 'OpenSans',
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: StudentMainView(), //Scaffold(
+      home: SplashView(),
     );
   }
 }

@@ -29,6 +29,9 @@ class _LoginState extends State<Login> {
   bool _hidePass = true;
   bool _isLoading = false;
 
+  // Remember Me
+  bool _rememberMe = false;
+
   @override
   void dispose() {
     _user.dispose();
@@ -113,6 +116,9 @@ class _LoginState extends State<Login> {
         return;
       }
 
+      // Save Remember Me preference
+      await _authService.setRememberMe(_rememberMe);
+
       await _navigateByRole(refreshedUser.uid);
     } on FirebaseAuthException catch (e) {
       String message;
@@ -121,15 +127,19 @@ class _LoginState extends State<Login> {
         case 'invalid-email':
           message = 'Invalid email address.';
           break;
+
         case 'user-disabled':
           message = 'This account has been disabled.';
           break;
+
         case 'invalid-credential':
           message = 'Incorrect email or password.';
           break;
+
         case 'network-request-failed':
           message = 'Please check your internet connection.';
           break;
+
         default:
           message = e.message ?? 'Login failed.';
       }
@@ -157,6 +167,9 @@ class _LoginState extends State<Login> {
       if (user == null) {
         throw Exception('Google account not found.');
       }
+
+      // Save Remember Me preference
+      await _authService.setRememberMe(_rememberMe);
 
       await _navigateByRole(user.uid);
     } on FirebaseAuthException catch (e) {
@@ -253,6 +266,40 @@ class _LoginState extends State<Login> {
 
                     return null;
                   },
+                ),
+
+                // REMEMBER ME
+                Row(
+                  children: [
+                    SizedBox(
+                      height: 35,
+                      width: 35,
+                      child: Checkbox(
+                        value: _rememberMe,
+                        activeColor: _green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        onChanged: _isLoading
+                            ? null
+                            : (value) {
+                                setState(() {
+                                  _rememberMe = value ?? false;
+                                });
+                              },
+                      ),
+                    ),
+
+                    const SizedBox(width: 5),
+
+                    const Text(
+                      'Remember Me',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
 
                 // FORGOT PASSWORD
@@ -405,7 +452,9 @@ class _SocialButton extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+
             const SizedBox(width: 10),
+
             Image.asset(icon, width: 26, height: 26),
           ],
         ),

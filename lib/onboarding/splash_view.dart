@@ -1,6 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:marefa/onboarding/onboarding1.dart';
+import 'package:marefa/general%20pages/login.dart';
+import 'package:marefa/general%20pages/services/auth_service.dart';
+import 'package:marefa/student/views/student_main_view.dart';
+import 'package:marefa/teacher/views/teacher_main_view.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -43,12 +48,76 @@ class _SplashViewState extends State<SplashView>
 
     Timer(const Duration(seconds: 4), () {
       if (!mounted) return;
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Onboarding1()),
-      );
+      _checkLogin();
     });
+  }
+
+  Future<void> _checkLogin() async {
+    try {
+      final User? user = await AuthService.instance.restoreSession();
+
+      if (!mounted) return;
+
+      if (user == null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => Onboarding1()),
+        );
+        return;
+      }
+
+      await user.reload();
+
+      final currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser == null) {
+        _goToLogin();
+        return;
+      }
+
+      // Check email verification for email/password accounts.
+      if (currentUser.providerData.any(
+            (provider) => provider.providerId == 'password',
+          ) &&
+          !currentUser.emailVerified) {
+        await AuthService.instance.logout();
+        _goToLogin();
+        return;
+      }
+
+      final role = await AuthService.instance.getUserRole(
+        currentUser.uid,
+      );
+
+      if (!mounted) return;
+
+      if (role == 'student') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => StudentMainView()),
+        );
+      } else if (role == 'teacher') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => TeacherMainView()),
+        );
+      } else {
+        await AuthService.instance.logout();
+        _goToLogin();
+      }
+    } catch (e) {
+      if (!mounted) return;
+
+      await AuthService.instance.logout();
+      _goToLogin();
+    }
+  }
+
+  void _goToLogin() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const Login()),
+    );
   }
 
   @override
@@ -60,7 +129,7 @@ class _SplashViewState extends State<SplashView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff297253),
+      backgroundColor: const Color(0xff297253),
       body: Center(
         child: SlideTransition(
           position: _slideAnimation,
@@ -89,7 +158,6 @@ class _SplashViewState extends State<SplashView>
 
                 const SizedBox(height: 10),
 
-                // App Name
                 const Text(
                   'Marefa',
                   style: TextStyle(
@@ -101,7 +169,6 @@ class _SplashViewState extends State<SplashView>
 
                 const SizedBox(height: 7),
 
-                // App Slogan
                 const Text(
                   'Learn Today · Build Tomorrow',
                   style: TextStyle(
