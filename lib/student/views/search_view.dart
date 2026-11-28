@@ -1,11 +1,7 @@
-//Important:
-//1- add favorite to the course by student hive
-
 import 'package:flutter/material.dart';
 import 'package:marefa/constants.dart';
 import 'package:marefa/student/models/course.dart';
 import 'package:marefa/student/services/course_service.dart';
-import 'package:marefa/student/services/favorite_service.dart';
 import 'package:marefa/student/widgets/course_card.dart';
 import 'package:marefa/student/widgets/filter_chip_bar.dart';
 import 'package:marefa/student/widgets/home_search_bar.dart';
@@ -31,7 +27,6 @@ class _SearchViewState extends State<SearchView> {
 
   late String _query;
   int _filterIndex = 0;
-  final FavoriteService _favoriteService = FavoriteService();
 
   @override
   void initState() {
@@ -50,7 +45,8 @@ class _SearchViewState extends State<SearchView> {
   }
 
   // ================= SEARCH & FILTER =================
-  List<Course> _getResults(List<Course> allCourses, Set<String> favoriteIds) {
+
+  List<Course> _getResults(List<Course> allCourses) {
     final query = _query.trim().toLowerCase();
 
     final matches = allCourses.where((course) {
@@ -60,21 +56,23 @@ class _SearchViewState extends State<SearchView> {
     return switch (_filterIndex) {
       1 => matches.where((course) => course.price == 0).toList(),
       2 => matches.where((course) => course.price > 0).toList(),
-      3 => matches.where((course) => favoriteIds.contains(course.id)).toList(),
+      3 => matches.where((course) => course.isFavorite).toList(),
       _ => matches,
     };
   }
 
   // ================= COURSES SECTION =================
 
-  Widget buildCoursesSection() {
+  Widget _buildCoursesSection() {
     return FutureBuilder<List<Course>>(
       future: _coursesFuture,
       builder: (context, snapshot) {
+        // Loading
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        //  Error
+
+        // Error
         if (snapshot.hasError) {
           return Center(
             child: Column(
@@ -96,42 +94,25 @@ class _SearchViewState extends State<SearchView> {
 
         final allCourses = snapshot.data ?? [];
 
-        return StreamBuilder<List<String>>(
-          stream: _favoriteService.watchFavoriteCourseIds(),
-          builder: (context, favoriteSnapshot) {
-            //Has Error
+        final results = _getResults(allCourses);
 
-            if (favoriteSnapshot.hasError) {
-              return const Center(child: Text('Failed to load favorites'));
-            }
+        // Empty
+        if (results.isEmpty) {
+          return const Center(
+            child: Text(
+              'No courses found',
+              style: TextStyle(color: AppColors.primaryDarkColor),
+            ),
+          );
+        }
 
-            // waiting
-            if (favoriteSnapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            final favoriteIds = favoriteSnapshot.data!.toSet();
-
-            final results = _getResults(allCourses, favoriteIds);
-
-            if (results.isEmpty) {
-              return const Center(
-                child: Text(
-                  'No courses found',
-                  style: TextStyle(color: AppColors.primaryDarkColor),
-                ),
-              );
-            }
-
-            //Success
-            return ListView.separated(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-              itemCount: results.length,
-              separatorBuilder: (_, _) => const SizedBox(height: 12),
-              itemBuilder: (_, index) {
-                return CourseCard(course: results[index]);
-              },
-            );
+        // Success
+        return ListView.separated(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+          itemCount: results.length,
+          separatorBuilder: (_, _) => const SizedBox(height: 12),
+          itemBuilder: (_, index) {
+            return CourseCard(course: results[index]);
           },
         );
       },
@@ -143,7 +124,6 @@ class _SearchViewState extends State<SearchView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -172,10 +152,13 @@ class _SearchViewState extends State<SearchView> {
 
             const SizedBox(height: 16),
 
-            Expanded(child: buildCoursesSection()),
+            Expanded(child: _buildCoursesSection()),
           ],
         ),
       ),
     );
   }
 }
+
+
+
