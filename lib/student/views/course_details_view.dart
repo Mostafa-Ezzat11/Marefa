@@ -4,6 +4,7 @@ import 'package:marefa/student/models/course.dart';
 import 'package:marefa/student/models/course_file_model.dart';
 import 'package:marefa/student/models/lesson_model.dart';
 import 'package:marefa/student/services/course_service.dart';
+import 'package:marefa/student/services/favorite_service.dart';
 import 'package:marefa/student/widgets/content_tab_switcher.dart';
 import 'package:marefa/student/widgets/course_materials_section.dart';
 import 'package:marefa/student/widgets/info_chip.dart';
@@ -14,11 +15,13 @@ class CourseDetailsView extends StatefulWidget {
   const CourseDetailsView({super.key, required this.course, this.onAddToCart});
 
   final Course course;
-  final VoidCallback? onAddToCart;
+  final VoidCallback? onAddToCart ;
 
   @override
   State<CourseDetailsView> createState() => _CourseDetailsViewState();
 }
+
+//////////////////////////////////////////////////////////////////////////
 
 class _CourseDetailsViewState extends State<CourseDetailsView> {
   final CourseService _courseService = CourseService();
@@ -26,11 +29,18 @@ class _CourseDetailsViewState extends State<CourseDetailsView> {
   late Future<({List<LessonModel> lessons, List<CourseFileModel> files})>
   _contentFuture;
 
+  final FavoriteService _favoriteService = FavoriteService();
+
+  bool _isFavorite = false;
+  bool _isFavoriteLoading = true;
+  bool _isFavoriteUpdating = false;
+
   @override
   void initState() {
     super.initState();
 
     _contentFuture = _courseService.fetchCourseContent(widget.course.id);
+    _loadFavoriteStatus();
   }
 
   /// 0 = Videos, 1 = Course Files.
@@ -49,7 +59,6 @@ class _CourseDetailsViewState extends State<CourseDetailsView> {
     final description = course.description;
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
       body: Column(
         children: [
           // Image of course
@@ -61,14 +70,36 @@ class _CourseDetailsViewState extends State<CourseDetailsView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    course.title,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      height: 1.3,
-                      color: AppColors.largeTextColor,
-                    ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          course.title,
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                            height: 1.3,
+                            color: AppColors.largeTextColor,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(width: 8),
+
+                      IconButton(
+                        onPressed: _isFavoriteLoading || _isFavoriteUpdating
+                            ? null
+                            : _toggleFavorite,
+                        icon: Icon(
+                          _isFavorite ? Icons.favorite : Icons.favorite_border,
+                          color: _isFavorite
+                              ? Colors.red
+                              : AppColors.largeTextColor,
+                          size: 26,
+                        ),
+                      ),
+                    ],
                   ),
 
                   const SizedBox(height: 16),
@@ -109,7 +140,6 @@ class _CourseDetailsViewState extends State<CourseDetailsView> {
 
                   // Switcher Header
                   _buildCourseContent(),
-
                 ],
               ),
             ),
@@ -123,7 +153,7 @@ class _CourseDetailsViewState extends State<CourseDetailsView> {
           child: SizedBox(
             height: 52,
             child: ElevatedButton(
-              onPressed: widget.onAddToCart,
+              onPressed:(){},
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryColor,
                 foregroundColor: Colors.white,
@@ -142,6 +172,69 @@ class _CourseDetailsViewState extends State<CourseDetailsView> {
         ),
       ),
     );
+  }
+
+  //==========    Methods    ============
+
+  Future<void> _loadFavoriteStatus() async {
+    try {
+      final isFavorite = await _favoriteService.isFavorite(widget.course.id);
+
+      if (!mounted) return;
+
+      setState(() {
+        _isFavorite = isFavorite;
+        _isFavoriteLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isFavoriteLoading = false;
+      });
+
+      debugPrint('Failed to load favorite status: $e');
+    }
+  }
+
+  Future<void> _toggleFavorite() async {
+    if (_isFavoriteUpdating) return;
+
+    final previousValue = _isFavorite;
+    final newValue = !previousValue;
+
+    setState(() {
+      _isFavorite = newValue;
+      _isFavoriteUpdating = true;
+    });
+
+    try {
+      if (newValue) {
+        await _favoriteService.addFavorite(widget.course.id);
+      } else {
+        await _favoriteService.removeFavorite(widget.course.id);
+      }
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() {
+        _isFavorite = previousValue;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to update favorites. Please try again.'),
+        ),
+      );
+
+      debugPrint('Favorite update error: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isFavoriteUpdating = false;
+        });
+      }
+    }
   }
 
   Widget _buildCourseContent() {
@@ -163,8 +256,11 @@ class _CourseDetailsViewState extends State<CourseDetailsView> {
           return Center(
             child: Column(
               children: [
-                const Text('Failed to load course content',style: TextStyle(fontSize: 20),),
-                SizedBox(height: 10,),
+                const Text(
+                  'Failed to load course content',
+                  style: TextStyle(fontSize: 20),
+                ),
+                SizedBox(height: 10),
                 TextButton(
                   onPressed: () {
                     setState(() {
@@ -173,7 +269,10 @@ class _CourseDetailsViewState extends State<CourseDetailsView> {
                       );
                     });
                   },
-                  child: const Text('Try Again',style: TextStyle(fontSize: 16),),
+                  child: const Text(
+                    'Try Again',
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
               ],
             ),
@@ -225,9 +324,10 @@ class _CourseDetailsViewState extends State<CourseDetailsView> {
       },
     );
   }
+
 }
 
-/// Course image (or a placeholder) with a back button on top.
+// Course image (or a placeholder) with a back button on top.
 class _Header extends StatelessWidget {
   const _Header({this.imageAsset});
 
