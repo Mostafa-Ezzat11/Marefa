@@ -124,7 +124,6 @@ class _SearchViewState extends State<SearchView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -162,5 +161,4 @@ class _SearchViewState extends State<SearchView> {
 }
 
 
-//Important:
-//1- add favorite to the course by student hive
+

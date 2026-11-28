@@ -49,7 +49,6 @@ class _CourseDetailsViewState extends State<CourseDetailsView> {
     final description = course.description;
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
       body: Column(
         children: [
           // Image of course
